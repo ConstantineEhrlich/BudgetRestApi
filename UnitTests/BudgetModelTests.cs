@@ -75,6 +75,19 @@ public class BudgetModelTests
     }
 
     [TestMethod]
+    public void CreateBudgetFile()
+    {
+        var context = GetContext();
+        BudgetFile budget = new("Default budget");
+        foreach (User u in context.Users)
+        {
+            budget.Owners.Add(u);
+        }
+        context.Add(budget);
+        context.SaveChanges();
+    }
+
+    [TestMethod]
     public void CreateTransactions()
     {
         Random rnd = new();
@@ -82,6 +95,9 @@ public class BudgetModelTests
 
         List<Category> cats = context.Categories.ToList();
         List<User> users = context.Users.ToList();
+        BudgetFile budget = context.Budgets.FirstOrDefault();
+        if (budget is null)
+            Assert.Fail("There are no budgets defined!");
 
         int transactions = rnd.Next(10, 100);
         Console.WriteLine($"Creating {transactions} transactions");
@@ -103,8 +119,14 @@ public class BudgetModelTests
                 _ => TransactionType.Expense,
             };
             
-            Transaction t = new(owner, author, new DateTime(2023, peri, day, 12, 00, 00), type, cat.Id, amt);
-
+            Transaction t = new(budget,
+                                owner, 
+                                author, 
+                                new DateTime(2023, peri, day, 12, 00, 00),
+                                type,
+                                cat,
+                                amt);
+            
             context.Add(t);
         }
 
@@ -134,5 +156,19 @@ public class BudgetModelTests
             Console.WriteLine($"{t.Id, -3}{t.RecordedAt, -12:dd-MMM-yy}{t.Year, -7}{t.Period, -7}{t.Owner?.Name, -15}{t.Amount,-10:F2}");
         }
         
+    }
+
+    [TestMethod]
+    public void ReadOwners()
+    {
+        var context = GetContext();
+        Console.WriteLine($"{"Id", -3}{"Description", -20}{"Owner Id", -15}{"Owner Name", -20}");
+        foreach (BudgetFile budget in context.Budgets)
+        {
+            foreach (User u in budget.Owners)
+            {
+                Console.WriteLine($"{budget.Id, -3}{budget.Description, -20}{u.Id, -15}{u.Name, -20}");
+            }
+        }
     }
 }

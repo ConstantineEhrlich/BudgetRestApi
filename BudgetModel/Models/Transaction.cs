@@ -6,15 +6,17 @@ namespace BudgetModel.Models;
 public class Transaction: IPeriodic
 {
     public int Id { get; set; }
+    
+    public int BudgetFileId { get; set; }
     public TransactionType Type { get; set; }
     public DateTime Date { get; set; }
     public DateTime RecordedAt { get; set; }
-    public string OwnerId { get; set; }
-    public string AuthorId { get; set; }
+    public string OwnerId { get; set; } = null!;
+    public string AuthorId { get; set; } = null!;
     public int Year { get; set; }
     public int Period { get; set; }
-    
-    public string CategoryId { get; set; }
+
+    public string CategoryId { get; set; } = null!;
     public decimal Amount { get; set; }
     
     // Navigation properties
@@ -22,13 +24,16 @@ public class Transaction: IPeriodic
     public virtual User? Author { get; set; }
     
     public virtual Category? Category { get; set; }
+    
+    public virtual BudgetFile? BudgetFile { get; set; }
 
     protected Transaction()
     {
         
     }
-    public Transaction(User owner, User author, DateTime date, TransactionType type, string categoryId, decimal amount)
+    public Transaction(BudgetFile budget, User owner, User author, DateTime date, TransactionType type, Category cat, decimal amount)
     {
+        BudgetFileId = budget.Id;
         Type = type;
         Date = date;
         RecordedAt = DateTime.Now;
@@ -36,12 +41,12 @@ public class Transaction: IPeriodic
         AuthorId = author.Id;
         Year = Date.Year;
         Period = Date.Month;
-        CategoryId = categoryId;
+        CategoryId = cat.Id;
         Amount = amount;
     }
 
-    public Transaction(User author, TransactionType type, string categoryId, decimal amount) 
-        : this(author, author, DateTime.Now, type, categoryId, amount)
+    public Transaction(BudgetFile budget, User author, TransactionType type, Category cat, decimal amount) 
+        : this(budget, author, author, DateTime.Now, type, cat, amount)
     {
     }
 }

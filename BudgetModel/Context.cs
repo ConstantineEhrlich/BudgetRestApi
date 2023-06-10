@@ -12,7 +12,7 @@ public class Context : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Category> Categories { get; set; }
-
+    public DbSet<BudgetFile> Budgets { get; set; }
     public Context(string dbPath, bool loadingMode = false)
     {
         SqliteConnectionStringBuilder connStr = new()
@@ -36,8 +36,7 @@ public class Context : DbContext
         modelBuilder.Entity<User>()
             .Property(u => u.Id)
             .ValueGeneratedOnAdd();
-
-
+        
         modelBuilder.Entity<Transaction>()
             .Property(t => t.Id)
             .ValueGeneratedOnAdd();
@@ -56,6 +55,11 @@ public class Context : DbContext
             .Property(t => t.Amount)
             .HasConversion<Double>();
 
+
+        modelBuilder.Entity<BudgetFile>()
+            .Property(bf => bf.Id)
+            .ValueGeneratedOnAdd();
+        
     }
     
 }

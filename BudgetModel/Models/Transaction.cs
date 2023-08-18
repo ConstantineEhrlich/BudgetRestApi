@@ -31,7 +31,13 @@ public class Transaction: IPeriodic
     {
         
     }
-    public Transaction(BudgetFile budget, User owner, User author, DateTime date, TransactionType type, Category cat, decimal amount)
+    public Transaction(BudgetFile budget,
+                       User owner,
+                       User author,
+                       DateTime date,
+                       TransactionType type,
+                       Category cat,
+                       decimal amount)
     {
         BudgetFileId = budget.Id;
         Type = type;
@@ -45,8 +51,10 @@ public class Transaction: IPeriodic
         Amount = amount;
     }
 
-    public Transaction(BudgetFile budget, User author, TransactionType type, Category cat, decimal amount) 
-        : this(budget, author, author, DateTime.Now, type, cat, amount)
-    {
-    }
+    public Transaction(BudgetFile budget,
+                       User author,
+                       TransactionType type,
+                       Category cat,
+                       decimal amount) 
+          : this(budget, author, author, DateTime.Now, type, cat, amount) { }
 }

@@ -9,10 +9,10 @@ public class Context : DbContext
 {
     private string _connStr;
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<Transaction> Transactions { get; set; }
-    public DbSet<Category> Categories { get; set; }
-    public DbSet<BudgetFile> Budgets { get; set; }
+    public DbSet<User> Users { get; internal set; }
+    public DbSet<Transaction> Transactions { get; internal set; }
+    public DbSet<Category> Categories { get; internal set; }
+    public DbSet<BudgetFile> Budgets { get; internal set; }
     public Context(string dbPath, bool loadingMode = false)
     {
         SqliteConnectionStringBuilder connStr = new()

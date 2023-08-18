@@ -1,3 +1,4 @@
+using System.Text;
 using BudgetModel.Enums;
 using static UnitTests.Helpers;
 using BudgetModel.Models;
@@ -150,10 +151,10 @@ public class BudgetModelTests
     {
         var context = GetContext();
         
-        Console.WriteLine($"{"Id", -3}{"Date", -12}{"Year", -7}{"Period", -7}{"Spent By", -15}{"Amount", -10}");
+        Console.WriteLine($"{"Id", -4}{"Date", -15}{"Year", -7}{"Period", -7}{"Spent By", -15}{"Amount", -10}");
         foreach (Transaction t in context.Transactions)
         {
-            Console.WriteLine($"{t.Id, -3}{t.RecordedAt, -12:dd-MMM-yy}{t.Year, -7}{t.Period, -7}{t.Owner?.Name, -15}{t.Amount,-10:F2}");
+            Console.WriteLine($"{t.Id, 4}{t.RecordedAt, -15:dd-MMM-yy}{t.Year, 7}{t.Period, 7}{t.Owner?.Name, -15}{t.Amount,-10:F2}");
         }
         
     }
@@ -162,12 +163,12 @@ public class BudgetModelTests
     public void ReadOwners()
     {
         var context = GetContext();
-        Console.WriteLine($"{"Id", -3}{"Description", -20}{"Owner Id", -15}{"Owner Name", -20}");
+        Console.WriteLine($"{"Id", -4}{"Description", -20}{"Owner Id", -15}{"Owner Name", -20}");
         foreach (BudgetFile budget in context.Budgets)
         {
             foreach (User u in budget.Owners)
             {
-                Console.WriteLine($"{budget.Id, -3}{budget.Description, -20}{u.Id, -15}{u.Name, -20}");
+                Console.WriteLine($"{budget.Id, 4}{budget.Description, -20}{u.Id, -15}{u.Name, -20}");
             }
         }
     }

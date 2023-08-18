@@ -23,7 +23,7 @@ The model is built using C# and leverages Entity Framework for database interact
 - **BudgetModelTests**: Contains unit tests for creating, reading, and managing users, categories, budget files, and transactions.
 - **Helpers**: Provides helper methods for unit tests, such as getting the database path and context.
 
-## Usage
+## Usage Examples
 
 ### Initialization
 ```csharp
@@ -53,4 +53,24 @@ context.BudgetFiles.Add(budget);
 
 ### Record transaction
 ```csharp
+// Detailed constructor:
+Transaction t1 = new(budget, owner, author, date, type, category, amount);
+context.Transactions.Add(t1);
+context.SaveChanges();
+
+//Simplified constructor, assumes that the author of the transaction is its owner, and the date is current date:
+Transaction t2 = new(budget, author, type, cat, amount);
+context.Transactions.Add(t2);
+context.SaveChanges();
+```
+
+### Read data
+```csharp
+// Sum transactions for a specific category:
+Category cat = context.Categories.FirstOrDefault(c => c.Id == "groceries");
+var groceryExpenses = context.Transactions.Where(t => t.Category == cat);
+decimal spent = groceryExpenses.Sum(e => e.Amount);
+
+// Utilize the extensions to calculate values between periods:
+decimal spentOnSummer = groceryExpenses.BetweenPeriods(2023, 6, 2023, 8).Sum(t => t.Amount);
 ```

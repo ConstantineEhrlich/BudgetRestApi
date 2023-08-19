@@ -6,9 +6,16 @@ public static class Helpers
 {
     public static string GetDbPath(bool makeNew = false)
     {
-        string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        string dbName = "database.db";
-        string dbPath = Path.Combine(baseDirectory, dbName);
+        string documentsDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        string codeDir = @"Code/dotnet/Files/Budget/db";
+
+        if (!Path.Exists(Path.Combine(documentsDir, codeDir)))
+        {
+            Directory.CreateDirectory(Path.Combine(documentsDir, codeDir));
+        }
+        
+        string dbFile = @"database.db";
+        string dbPath = Path.Combine(documentsDir, codeDir, dbFile);
         if (File.Exists(dbPath) && makeNew)
         {
             File.Delete(dbPath);

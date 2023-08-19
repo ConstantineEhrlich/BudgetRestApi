@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetModel", "BudgetModel\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{D3311E45-6718-4903-8690-38A8008A5E61}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetWebApi", "BudgetWebApi\BudgetWebApi.csproj", "{E1634B59-8F7D-4C32-AAB2-617C9E27B73C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{D3311E45-6718-4903-8690-38A8008A5E61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3311E45-6718-4903-8690-38A8008A5E61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3311E45-6718-4903-8690-38A8008A5E61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1634B59-8F7D-4C32-AAB2-617C9E27B73C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1634B59-8F7D-4C32-AAB2-617C9E27B73C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1634B59-8F7D-4C32-AAB2-617C9E27B73C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1634B59-8F7D-4C32-AAB2-617C9E27B73C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

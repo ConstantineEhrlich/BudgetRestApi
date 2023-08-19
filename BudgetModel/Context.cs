@@ -7,12 +7,17 @@ namespace BudgetModel;
 
 public class Context : DbContext
 {
-    private string _connStr;
-
-    public DbSet<User> Users { get; internal set; }
+    private readonly string _connStr = null!;
+   public DbSet<User> Users { get; internal set; }
     public DbSet<Transaction> Transactions { get; internal set; }
     public DbSet<Category> Categories { get; internal set; }
     public DbSet<BudgetFile> Budgets { get; internal set; }
+
+    public Context(DbContextOptions<Context> options) : base(options)
+    {
+        
+    } 
+
     public Context(string dbPath, bool loadingMode = false)
     {
         SqliteConnectionStringBuilder connStr = new()
@@ -26,9 +31,11 @@ public class Context : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite(_connStr);
+        if (_connStr is not null)
+        {
+            optionsBuilder.UseSqlite(_connStr);
+        }
         optionsBuilder.UseLazyLoadingProxies();
-        
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -13,6 +13,15 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", builder =>
+            {
+                builder.AllowAnyOrigin();
+                builder.AllowAnyMethod();
+                builder.AllowAnyHeader();
+            });
+        });
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
@@ -27,6 +36,7 @@ public class Startup
             app.UseDeveloperExceptionPage();
             app.UseSwagger();
             app.UseSwaggerUI();
+            app.UseCors("AllowAll");
         }
 
         app.UseHttpsRedirection();

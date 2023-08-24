@@ -59,6 +59,11 @@ public class Context : DbContext
             .HasForeignKey(tr => tr.AuthorId);
 
         modelBuilder.Entity<Transaction>()
+            .HasOne(tr => tr.Category)
+            .WithMany()
+            .HasForeignKey(tr => new { tr.BudgetFileId, tr.CategoryId });
+        
+        modelBuilder.Entity<Transaction>()
             .Property(t => t.Amount)
             .HasConversion<Double>();
 
@@ -66,7 +71,15 @@ public class Context : DbContext
         modelBuilder.Entity<BudgetFile>()
             .Property(bf => bf.Id)
             .ValueGeneratedOnAdd();
-        
+
+        modelBuilder.Entity<Category>()
+            .HasKey(category => new { category.BudgetFileId, category.Id });
+
+        modelBuilder.Entity<Category>()
+            .HasOne(cat => cat.BudgetFile)
+            .WithMany(budgetFile => budgetFile.Categories)
+            .HasForeignKey(cat => cat.BudgetFileId);
+
     }
     
 }

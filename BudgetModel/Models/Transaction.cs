@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using BudgetModel.Enums;
 using BudgetModel.Interfaces;
 
@@ -21,11 +22,16 @@ public class Transaction: IPeriodic
     public decimal Amount { get; set; }
     
     // Navigation properties
+    [JsonIgnore]
     public virtual User Owner { get; set; }
+    
+    [JsonIgnore]
     public virtual User Author { get; set; }
     
+    [JsonIgnore]
     public virtual Category Category { get; set; }
     
+    [JsonIgnore]
     public virtual BudgetFile BudgetFile { get; set; }
 
     public Transaction()

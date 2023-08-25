@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using BudgetModel.Enums;
 
 namespace BudgetModel.Models;
@@ -12,6 +13,7 @@ public class Category
 
     public bool IsActive { get; set; } = true;
     
+    [JsonIgnore]
     public virtual BudgetFile BudgetFile { get; set; }
 
     public Category(string budgetFileId, string id, string description)

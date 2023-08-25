@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using BudgetServices;
 using Microsoft.EntityFrameworkCore;
 
 namespace BudgetWebApi;
@@ -13,6 +15,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        // Cors allow requesting the API from the domain that does not equal to API (browser safety measure)
         services.AddCors(options =>
         {
             options.AddPolicy("AllowAll", builder =>
@@ -22,11 +25,23 @@ public class Startup
                 builder.AllowAnyHeader();
             });
         });
-        services.AddControllers();
+        
+        // Controller automatically converts objects into json, here we apply the options:
+        services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        });
+        
+        
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+        services.AddScoped<UserService>();
+        services.AddScoped<BudgetFileService>();
+        services.AddScoped<CategoryService>();
+        services.AddScoped<TransactionService>();
         services.AddDbContext<BudgetModel.Context>(options =>
             options.UseSqlite(Configuration.GetConnectionString("Default")));
+
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

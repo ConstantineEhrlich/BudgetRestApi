@@ -18,7 +18,7 @@ public class Context : DbContext
         
     } 
 
-    public Context(string dbPath, bool loadingMode = false)
+    public Context(string? dbPath, bool loadingMode = false)
     {
         SqliteConnectionStringBuilder connStr = new()
         {
@@ -40,14 +40,6 @@ public class Context : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>()
-            .Property(u => u.Id)
-            .ValueGeneratedOnAdd();
-        
-        modelBuilder.Entity<Transaction>()
-            .Property(t => t.Id)
-            .ValueGeneratedOnAdd();
-
         modelBuilder.Entity<Transaction>()
             .HasOne(tr => tr.Owner)
             .WithMany(u => u.Transactions)
@@ -65,12 +57,8 @@ public class Context : DbContext
         
         modelBuilder.Entity<Transaction>()
             .Property(t => t.Amount)
-            .HasConversion<Double>();
+            .HasConversion<double>();
 
-
-        modelBuilder.Entity<BudgetFile>()
-            .Property(bf => bf.Id)
-            .ValueGeneratedOnAdd();
 
         modelBuilder.Entity<Category>()
             .HasKey(category => new { category.BudgetFileId, category.Id });

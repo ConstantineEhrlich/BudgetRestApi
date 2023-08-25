@@ -12,7 +12,7 @@ public class Config
         "DeleteDatabase"
     };
     
-    public string DatabasePath
+    public string? DatabasePath
     {
         get => _configKeys["DatabasePath"].ToString();
     }

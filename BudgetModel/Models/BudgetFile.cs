@@ -2,9 +2,13 @@ namespace BudgetModel.Models;
 
 public class BudgetFile
 {
-    public int Id { get; set; }
-    public string Slug { get; set; }
+    public string Id { get; set; } = Guid.NewGuid().ToString("N");
+    public string Slug { get; set; } = string.Empty;
     public string Description { get; set; } = null!;
+
+    public bool IsDeleted { get; set; } = false;
+
+    public bool IsPrivate { get; set; } = false;
     
     // Navigation properties
     public virtual ICollection<Transaction>? Transactions { get; set; }
@@ -17,15 +21,9 @@ public class BudgetFile
     public BudgetFile(string description)
     {
         Description = description;
-        Slug = CreateSlug(description);
     }
     
     
-    public static string CreateSlug(string description)
-    {
-        string[] words = description.Split(' ').Take(3).ToArray();
-        string slug = string.Join("-", words).ToLower();
-        return slug;
-    }
+    
 
 }

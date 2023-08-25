@@ -17,14 +17,12 @@ public class SampleDataCreator
     public void Create()
     {
         CreateDatabase();
-        if (_context is not null)
-        {
-            CreateUsers();
-            CreateBudgetFiles();
-            CreateCategories();
-            CreateTransactions();            
-        }
-        
+        if (_context is null) return;
+        CreateUsers();
+        CreateBudgetFiles();
+        CreateCategories();
+        CreateTransactions();
+
     }
 
     private void CreateDatabase()
@@ -74,7 +72,9 @@ public class SampleDataCreator
     {
         Console.WriteLine("Creating budget files...");
         BudgetFile b1 = new("Family budget");
+        b1.Id = "1";
         BudgetFile b2 = new("Project budget");
+        b2.Id = "2";
         foreach (User u in _context!.Users)
         {
             b1.Owners!.Add(u);
@@ -90,29 +90,29 @@ public class SampleDataCreator
         Console.WriteLine("Creating categories");
         Category[] familyCats =
         {
-            new Category(1, "salary", "Salary"),
-            new Category(1, "transfer", "Transfer"),
-            new Category(1, "rent", "Rent"),
-            new Category(1, "municipal", "Municipal"),
-            new Category(1, "loans", "Loans"),
-            new Category(1, "health", "Health"),
-            new Category(1, "transport", "Transport"),
-            new Category(1, "digicom", "Digicom"),
-            new Category(1, "gadgets", "Gadgets"),
-            new Category(1, "savings", "Savings"),
-            new Category(1, "food", "Food"),
-            new Category(1, "pharm", "Pharm"),
-            new Category(1, "leisure", "Leisure"),
-            new Category(1, "hns", "H&S"),
-            new Category(1, "other", "Other"),
+            new Category("1", "salary", "Salary"),
+            new Category("1", "transfer", "Transfer"),
+            new Category("1", "rent", "Rent"),
+            new Category("1", "municipal", "Municipal"),
+            new Category("1", "loans", "Loans"),
+            new Category("1", "health", "Health"),
+            new Category("1", "transport", "Transport"),
+            new Category("1", "digicom", "Digicom"),
+            new Category("1", "gadgets", "Gadgets"),
+            new Category("1", "savings", "Savings"),
+            new Category("1", "food", "Food"),
+            new Category("1", "pharm", "Pharm"),
+            new Category("1", "leisure", "Leisure"),
+            new Category("1", "hns", "H&S"),
+            new Category("1", "other", "Other"),
         };
 
         Category[] projectCats =
         {
-            new Category(2, "revenue", "Revenue"),
-            new Category(2, "labor", "Labor"),
-            new Category(2, "material", "Material"),
-            new Category(2, "subcontractor", "Subcontractor"),
+            new Category("2", "revenue", "Revenue"),
+            new Category("2", "labor", "Labor"),
+            new Category("2", "material", "Material"),
+            new Category("2", "subcontractor", "Subcontractor"),
         };
         
         _context!.Categories.AddRange(familyCats);
@@ -152,15 +152,13 @@ public class SampleDataCreator
                 new DateTime(2023, peri, day, 12, 00, 00),
                 type,
                 cat,
+                "Example",
                 amt);
 
 
-            transactions.Add(t);
             _context.Add(t);
-            _context.SaveChanges();
         }
-        //_context.AddRange(transactions);
-        //_context!.SaveChanges();
+        _context!.SaveChanges();
     }
 }
 

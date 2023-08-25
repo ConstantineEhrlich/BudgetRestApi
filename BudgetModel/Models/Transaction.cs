@@ -5,9 +5,9 @@ namespace BudgetModel.Models;
 
 public class Transaction: IPeriodic
 {
-    public int Id { get; set; }
+    public string Id { get; set; } = Guid.NewGuid().ToString("N");
     
-    public int BudgetFileId { get; set; }
+    public string BudgetFileId { get; set; }
     public TransactionType Type { get; set; }
     public DateTime Date { get; set; }
     public DateTime RecordedAt { get; set; }
@@ -16,6 +16,7 @@ public class Transaction: IPeriodic
     public int Year { get; set; }
     public int Period { get; set; }
 
+    public string Description { get; set; }
     public string CategoryId { get; set; } = null!;
     public decimal Amount { get; set; }
     
@@ -37,6 +38,7 @@ public class Transaction: IPeriodic
                        DateTime date,
                        TransactionType type,
                        Category cat,
+                       string description,
                        decimal amount)
     {
         BudgetFileId = budget.Id;
@@ -48,6 +50,7 @@ public class Transaction: IPeriodic
         Year = Date.Year;
         Period = Date.Month;
         CategoryId = cat.Id;
+        Description = description;
         Amount = amount;
     }
 
@@ -55,6 +58,7 @@ public class Transaction: IPeriodic
                        User author,
                        TransactionType type,
                        Category cat,
+                       string description,
                        decimal amount) 
-          : this(budget, author, author, DateTime.Now, type, cat, amount) { }
+          : this(budget, author, author, DateTime.Now, type, cat, description, amount) { }
 }

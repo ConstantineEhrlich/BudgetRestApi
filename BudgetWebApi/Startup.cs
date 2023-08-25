@@ -32,7 +32,6 @@ public class Startup
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         });
         
-        
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
         services.AddScoped<UserService>();

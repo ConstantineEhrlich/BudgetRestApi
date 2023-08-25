@@ -1,3 +1,4 @@
+using BudgetModel.Models;
 using BudgetServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,13 @@ public class TransactionsController : ControllerBase
         _transactionService = transactionService;
     }
 
-    [HttpGet(Name = "GetTransactions")]
+    [HttpGet("{transactionId}")]
+    public Transaction Get(string transactionId)
+    {
+        return _transactionService.GetTransaction(transactionId, "john");
+    }
+
+    [HttpGet(Name = "transactions")]
     public IEnumerable<object> Get()
     {
         return _transactionService.GetAllTransactions("1", "john").ToArray();

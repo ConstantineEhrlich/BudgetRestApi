@@ -22,7 +22,6 @@ public class SampleDataCreator
         CreateBudgetFiles();
         CreateCategories();
         CreateTransactions();
-
     }
 
     private void CreateDatabase()

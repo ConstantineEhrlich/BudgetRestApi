@@ -11,10 +11,10 @@ public class BudgetFile
     public bool IsPrivate { get; set; } = false;
     
     // Navigation properties
-    public virtual ICollection<Transaction>? Transactions { get; set; }
-    public virtual ICollection<User>? Owners { get; set; } = new List<User>();
+    public virtual ICollection<Transaction> Transactions { get; set; }
+    public virtual ICollection<User> Owners { get; set; } = new List<User>();
 
-    public virtual ICollection<Category>? Categories { get; set; }
+    public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
     
     protected BudgetFile(){}
 

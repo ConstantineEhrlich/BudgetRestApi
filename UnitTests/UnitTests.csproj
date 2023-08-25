@@ -18,6 +18,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BudgetModel\BudgetModel.csproj" />
+      <ProjectReference Include="..\BudgetServices\BudgetServices.csproj" />
     </ItemGroup>
+
 
 </Project>

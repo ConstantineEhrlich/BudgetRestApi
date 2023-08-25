@@ -21,14 +21,14 @@ public class Transaction: IPeriodic
     public decimal Amount { get; set; }
     
     // Navigation properties
-    public virtual User? Owner { get; set; }
-    public virtual User? Author { get; set; }
+    public virtual User Owner { get; set; }
+    public virtual User Author { get; set; }
     
-    public virtual Category? Category { get; set; }
+    public virtual Category Category { get; set; }
     
-    public virtual BudgetFile? BudgetFile { get; set; }
+    public virtual BudgetFile BudgetFile { get; set; }
 
-    protected Transaction()
+    public Transaction()
     {
         
     }

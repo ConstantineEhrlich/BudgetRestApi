@@ -13,6 +13,7 @@ public class Category
     public bool IsActive { get; set; } = true;
     
     public virtual BudgetFile BudgetFile { get; set; }
+
     public Category(string budgetFileId, string id, string description)
     {
         Id = id;

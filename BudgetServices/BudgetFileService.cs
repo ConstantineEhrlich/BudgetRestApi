@@ -28,6 +28,24 @@ public class BudgetFileService
         return b;
     }
 
+    public BudgetFile AddOwner(string budgetId, string newOwnerId, string requestingUserId)
+    {
+        BudgetFile b = GetBudgetFile(budgetId, requestingUserId);
+        User newOwner = _userService.GetUser(newOwnerId);
+        b.Owners.Add(newOwner);
+        _context.SaveChanges();
+        return b;
+    }
+
+    public BudgetFile RemoveOwner(string budgetId, string ownerId, string requestingUserId)
+    {
+        BudgetFile b = GetBudgetFile(budgetId, requestingUserId);
+        User newOwner = _userService.GetUser(ownerId);
+        b.Owners.Remove(newOwner);
+        _context.SaveChanges();
+        return b;
+    }
+
     public BudgetFile GetBudgetFile(string id, string? requestingUserId = null)
     {
         BudgetFile? b = _context.Budgets.Include(budgetFile => budgetFile.Owners).FirstOrDefault(bd => bd.Id == id);

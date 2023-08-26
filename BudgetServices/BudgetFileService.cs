@@ -32,6 +32,9 @@ public class BudgetFileService
     {
         BudgetFile b = GetBudgetFile(budgetId, requestingUserId);
         User newOwner = _userService.GetUser(newOwnerId);
+        if (b.Owners.Contains(newOwner))
+            throw new ArgumentException($"{newOwnerId} is already owner of the budget!", nameof(newOwnerId));
+        
         b.Owners.Add(newOwner);
         _context.SaveChanges();
         return b;
@@ -83,6 +86,7 @@ public class BudgetFileService
             throw new ArgumentException($"User {requestingUserId} is not allowed to delete budget {id}", nameof(requestingUserId));
 
         target.IsDeleted = true;
+        _context.SaveChanges();
 
     }
 
@@ -90,12 +94,10 @@ public class BudgetFileService
     {
         List<BudgetFile> budgetFiles = new();
         budgetFiles.AddRange(_context.Budgets!.Where(b => !b.IsPrivate));
-        
+
         if (requestingUserId is not null)
-            budgetFiles.AddRange(
-                _context.Budgets!.
-                    Where(b=>b.IsPrivate)
-                    .Where(b => IsOwner(requestingUserId, b.Id)));
+            budgetFiles.AddRange(_context.Budgets!.Where(b => b.Owners.Select(o => o.Id).Contains(requestingUserId))
+                .Where(b => b.IsPrivate));
         
         return budgetFiles;
     }

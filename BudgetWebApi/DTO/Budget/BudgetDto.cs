@@ -8,6 +8,8 @@ public class BudgetDto
     public string? Slug { get; set; }
     public string? Description { get; set; }
     public bool? IsPrivate { get; set; }
+    
+    public List<UserDto> Owners { get; set; }
 
     public BudgetDto(BudgetFile b)
     {
@@ -15,6 +17,7 @@ public class BudgetDto
         Slug = b.Slug;
         Description = b.Description;
         IsPrivate = b.IsPrivate;
+        Owners = b.Owners.Select(o => new UserDto(o)).ToList();
     }
     
 }

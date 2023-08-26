@@ -1,6 +1,11 @@
+using System.Text;
 using System.Text.Json.Serialization;
+using BudgetModel.Models;
 using BudgetServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BudgetWebApi;
 
@@ -15,7 +20,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        // Cors allow requesting the API from the domain that does not equal to API (browser safety measure)
+        // Cors allow requesting the API from the domain that is different than API domain
         services.AddCors(options =>
         {
             options.AddPolicy("AllowAll", builder =>
@@ -26,20 +31,60 @@ public class Startup
             });
         });
         
-        // Controller automatically converts objects into json, here we apply the options:
+        
+        
+        // Json conversion options to be used by the controllers
         services.AddControllers().AddJsonOptions(options =>
         {
+            options.JsonSerializerOptions.MaxDepth = 2;
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         });
         
+        
+        
+        
+        // Services to support Swagger
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+        
+        
+        
+        
+        // Data access services
         services.AddScoped<UserService>();
         services.AddScoped<BudgetFileService>();
         services.AddScoped<CategoryService>();
         services.AddScoped<TransactionService>();
         services.AddDbContext<BudgetModel.Context>(options =>
             options.UseSqlite(Configuration.GetConnectionString("Default")));
+        
+        
+        // Read JWT key from the environment variables:
+        string key = System.Environment.GetEnvironmentVariable("JWT_KEY") ?? "testkey";
+        byte[] byteKey = Encoding.ASCII.GetBytes(key);
+        
+        // Authentication service
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(byteKey),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+        
+        // Password hashser
+        services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
+
+
 
     }
 
@@ -55,6 +100,7 @@ public class Startup
 
         app.UseHttpsRedirection();
         app.UseRouting();
+        app.UseAuthentication();
         app.UseAuthorization();
         
         app.UseEndpoints(ep => ep.MapControllers());

@@ -25,9 +25,10 @@ public class TransactionService
                                string requestingUserId,
                                string categoryId,
                                decimal amount,
-                               string description = "",
+                               string? description = "",
                                TransactionType? type = null,
                                string? ownerId = null,
+                               DateTime? date = null,
                                int? year = null,
                                int? period = null)
     {
@@ -37,12 +38,13 @@ public class TransactionService
         User author = _userService.GetUser(requestingUserId);
         User owner = ownerId is null ? author : _userService.GetUser(ownerId);
         Category cat = _categoryService.GetCategory(budgetFileId, categoryId, requestingUserId);
-        DateTime date = DateTime.Now;
+        DateTime entryDate = date ?? DateTime.Now;
         
-        Transaction t = new(budgetFile, author, type ?? TransactionType.Expense, cat, description, amount)
+        Transaction t = new(budgetFile, author, type ?? TransactionType.Expense, cat, description ?? string.Empty, amount)
         {
-            Year = year ?? date.Year,
-            Period = period ?? date.Month
+            Date = date ?? entryDate,
+            Year = year ?? entryDate.Year,
+            Period = period ?? entryDate.Month
         };
         _context.Add(t);
         _context.SaveChanges();

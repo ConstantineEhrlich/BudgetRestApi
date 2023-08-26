@@ -6,13 +6,11 @@ namespace BudgetServices;
 public class CategoryService
 {
     private readonly Context _context;
-    private readonly UserService _userService;
     private readonly BudgetFileService _budgetService;
 
-    public CategoryService(Context context, UserService userService, BudgetFileService budgetService)
+    public CategoryService(Context context, BudgetFileService budgetService)
     {
         _context = context;
-        _userService = userService;
         _budgetService = budgetService;
     }
 
@@ -31,7 +29,7 @@ public class CategoryService
     public Category GetCategory(string budgetFileId, string categoryId, string requestingUserId)
     {
         _budgetService.ThrowIfNotOwner(requestingUserId, budgetFileId);
-        return _context.Categories.FirstOrDefault(c => c.Id == categoryId && c.BudgetFileId == budgetFileId)
+        return _context.Categories?.FirstOrDefault(c => c.Id == categoryId && c.BudgetFileId == budgetFileId)
             ?? throw new ArgumentException($"Category not found", nameof(categoryId));
     }
 

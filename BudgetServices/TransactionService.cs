@@ -42,6 +42,7 @@ public class TransactionService
         
         Transaction t = new(budgetFile, author, type ?? TransactionType.Expense, cat, description ?? string.Empty, amount)
         {
+            OwnerId = owner.Id,
             Date = date ?? entryDate,
             Year = year ?? entryDate.Year,
             Period = period ?? entryDate.Month
@@ -53,9 +54,11 @@ public class TransactionService
 
     public Transaction GetTransaction(string id, string requestingUserId)
     {
-        Transaction t = _context.Transactions.Include(transaction => transaction.BudgetFile).FirstOrDefault(tr => tr.Id == id)
-                        ?? throw new ArgumentException($"Transaction {id} not found!");
-
+        Transaction? t = _context.Transactions!.Include(transaction => transaction.BudgetFile)
+            .FirstOrDefault(tr => tr.Id == id);
+        if(t is null)                
+            throw new ArgumentException($"Transaction {id} not found!");
+    
         if (t.BudgetFile.IsPrivate)
             _budgetService.ThrowIfNotOwner(requestingUserId, t.BudgetFileId);
         
@@ -87,7 +90,7 @@ public class TransactionService
         if(b.IsPrivate)
             _budgetService.ThrowIfNotOwner(requestingUserId, budgetId);
 
-        IEnumerable<Transaction> trns = _context.Transactions
+        IEnumerable<Transaction> trns = _context.Transactions!
             .Where(t => t.BudgetFileId == budgetId);
 
         if (forYear is not null)

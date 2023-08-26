@@ -14,7 +14,7 @@ public class BudgetFile
     
     // Navigation properties
     [JsonIgnore]
-    public virtual ICollection<Transaction> Transactions { get; set; }
+    public virtual ICollection<Transaction>? Transactions { get; set; }
     
     [JsonIgnore]
     public virtual ICollection<User> Owners { get; set; } = new List<User>();

@@ -48,7 +48,7 @@ public class BudgetFileService
 
     public BudgetFile GetBudgetFile(string id, string? requestingUserId = null)
     {
-        BudgetFile? b = _context.Budgets.Include(budgetFile => budgetFile.Owners).FirstOrDefault(bd => bd.Id == id);
+        BudgetFile? b = _context.Budgets?.Include(budgetFile => budgetFile.Owners).FirstOrDefault(bd => bd.Id == id);
         if (b is null)
             throw new ArgumentException($"Budget not found", nameof(id));
 
@@ -58,7 +58,7 @@ public class BudgetFileService
         if (b.IsPrivate && requestingUserId is null)
             throw new ArgumentException($"The budget is private and the user is not specified", nameof(requestingUserId));
         
-        if(b.IsPrivate && !IsOwner(requestingUserId, id))
+        if(b.IsPrivate && !IsOwner(requestingUserId!, id))
                 throw new ArgumentException($"The budget is not owned by {requestingUserId}", nameof(requestingUserId));
 
         return b;
@@ -89,20 +89,20 @@ public class BudgetFileService
     public List<BudgetFile> GetAllBudgetFiles(string? requestingUserId = null)
     {
         List<BudgetFile> budgetFiles = new();
-        budgetFiles.AddRange(_context.Budgets.Where(b => !b.IsPrivate));
+        budgetFiles.AddRange(_context.Budgets!.Where(b => !b.IsPrivate));
         
         if (requestingUserId is not null)
             budgetFiles.AddRange(
-                _context.Budgets.
+                _context.Budgets!.
                     Where(b=>b.IsPrivate)
                     .Where(b => IsOwner(requestingUserId, b.Id)));
         
         return budgetFiles;
     }
 
-    internal bool IsOwner(string userId, string budgetId)
+    private bool IsOwner(string userId, string budgetId)
     {
-        BudgetFile? b = _context.Budgets.Include(budgetFile => budgetFile.Owners).FirstOrDefault(b => b.Id == budgetId);
+        BudgetFile? b = _context.Budgets!.Include(budgetFile => budgetFile.Owners).FirstOrDefault(b => b.Id == budgetId);
         if (b is null)
             return false;
         
@@ -114,7 +114,7 @@ public class BudgetFileService
         string[] words = description.Split(' ').Take(3).ToArray();
         string slug = string.Join("-", words).ToLower();
 
-        if (_context.Budgets.Select(b => b.Slug).Contains(slug))
+        if (_context.Budgets!.Select(b => b.Slug).Contains(slug))
         {
             string date = DateTime.Now.ToString("dd-MMM-yyyy");
             return slug + "-" + date;

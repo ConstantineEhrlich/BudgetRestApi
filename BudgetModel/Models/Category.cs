@@ -14,7 +14,7 @@ public class Category
     public bool IsActive { get; set; } = true;
     
     [JsonIgnore]
-    public virtual BudgetFile BudgetFile { get; set; }
+    public virtual BudgetFile? BudgetFile { get; set; }
 
     public Category(string budgetFileId, string id, string description)
     {

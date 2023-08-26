@@ -7,8 +7,8 @@ namespace BudgetModel.Models;
 public class Transaction: IPeriodic
 {
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
-    
-    public string BudgetFileId { get; set; }
+
+    public string BudgetFileId { get; set; } = string.Empty;
     public TransactionType Type { get; set; }
     public DateTime Date { get; set; }
     public DateTime RecordedAt { get; set; }
@@ -17,24 +17,24 @@ public class Transaction: IPeriodic
     public int Year { get; set; }
     public int Period { get; set; }
 
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
     public string CategoryId { get; set; } = null!;
     public decimal Amount { get; set; }
     
     // Navigation properties
     [JsonIgnore]
-    public virtual User Owner { get; set; }
+    public virtual User? Owner { get; set; }
     
     [JsonIgnore]
-    public virtual User Author { get; set; }
+    public virtual User? Author { get; set; }
     
     [JsonIgnore]
-    public virtual Category Category { get; set; }
+    public virtual Category? Category { get; set; }
     
     [JsonIgnore]
-    public virtual BudgetFile BudgetFile { get; set; }
+    public virtual BudgetFile? BudgetFile { get; set; }
 
-    public Transaction()
+    protected Transaction()
     {
         
     }

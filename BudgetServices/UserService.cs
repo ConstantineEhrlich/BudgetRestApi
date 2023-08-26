@@ -28,7 +28,7 @@ public class UserService
         if (string.IsNullOrEmpty(name))
             throw new ArgumentException("Name can't be empty", nameof(name));
 
-        if (_context.Users.FirstOrDefault(u => u.Id == id) is not null)
+        if (_context.Users!.FirstOrDefault(u => u.Id == id) is not null)
             throw new ArgumentException("User already exists!", nameof(id));
 
         User u = new User(id, name);
@@ -73,7 +73,7 @@ public class UserService
         if (string.IsNullOrEmpty(id))
             throw new ArgumentException("Id can't be empty", nameof(id));
         
-        User? u = _context.Users.FirstOrDefault(usr => usr.Id == id);
+        User? u = _context.Users!.FirstOrDefault(usr => usr.Id == id);
         if (u is null)
             throw new ArgumentException($"User {id} does not exist!", nameof(id));
 
@@ -92,17 +92,17 @@ public class UserService
 
     public string GenerateJwtKey(User user)
     {
-        string JWT_KEY = System.Environment.GetEnvironmentVariable("JWT_KEY") ?? "testkey";
-        byte[] byteKey = Encoding.ASCII.GetBytes(JWT_KEY);
+        string jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? "testkey";
+        byte[] byteJwtKey = Encoding.ASCII.GetBytes(jwtKey);
         JwtSecurityTokenHandler tokenHandler = new();
         SecurityTokenDescriptor descriptor = new()
         {
-            Subject = new ClaimsIdentity(new Claim[]
+            Subject = new ClaimsIdentity(new []
             {
-                new Claim(ClaimTypes.Name, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Id),
             }),
             Expires = DateTime.UtcNow.AddDays(7),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(byteKey), SecurityAlgorithms.HmacSha256Signature)
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(byteJwtKey), SecurityAlgorithms.HmacSha256Signature)
         };
         SecurityToken token = tokenHandler.CreateToken(descriptor);
         return tokenHandler.WriteToken(token);

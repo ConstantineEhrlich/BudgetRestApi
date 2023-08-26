@@ -8,10 +8,10 @@ namespace BudgetModel;
 public class Context : DbContext
 {
     private readonly string _connStr = null!;
-   public DbSet<User> Users { get; internal set; }
-    public DbSet<Transaction> Transactions { get; internal set; }
-    public DbSet<Category> Categories { get; internal set; }
-    public DbSet<BudgetFile> Budgets { get; internal set; }
+    public DbSet<User>? Users { get; internal set; }
+    public DbSet<Transaction>? Transactions { get; internal set; }
+    public DbSet<Category>? Categories { get; internal set; }
+    public DbSet<BudgetFile>? Budgets { get; internal set; }
 
     public Context(DbContextOptions<Context> options) : base(options)
     {

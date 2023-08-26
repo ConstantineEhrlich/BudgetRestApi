@@ -108,12 +108,7 @@ public class UserController : ControllerBase
         try
         {
             User u = _userService.GetUser(userId ?? loggedUserId.Value);
-            return Ok(new UserDto()
-            {
-                Id = u.Id,
-                Email = u.Email,
-                Name = u.Name
-            });
+            return Ok(new UserDto(u));
         }
         catch (ArgumentException e)
         {

@@ -86,7 +86,7 @@ public class TransactionService
                                    string? byCategory = null,
                                    string? byOwner = null)
     {
-        BudgetFile b = _budgetService.GetBudgetFile(budgetId);
+        BudgetFile b = _budgetService.GetBudgetFile(budgetId, requestingUserId);
         if(b.IsPrivate)
             _budgetService.ThrowIfNotOwner(requestingUserId, budgetId);
 

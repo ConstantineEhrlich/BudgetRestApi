@@ -18,7 +18,7 @@ public class CategoryService
     {
         _budgetService.ThrowIfNotOwner(requestingUserId, budgetFileId);
         Category cat = new(budgetFileId, categoryId, description ?? string.Empty);
-        if (_budgetService.GetBudgetFile(budgetFileId).Categories.Contains(cat))
+        if (_budgetService.GetBudgetFile(budgetFileId, requestingUserId).Categories.Contains(cat))
             throw new ArgumentException("Category already present!", nameof(categoryId));
 
         _context.Add(cat);

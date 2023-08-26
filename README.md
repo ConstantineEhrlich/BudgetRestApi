@@ -55,7 +55,7 @@ Provides REST API with the following endpoints:
 
 
 ## Usage Examples
-This section shows direct programmatic manipulation with the database through
+This section shows direct programmatic manipulation with the database through the Entity Framework
 
 ### Initialization
 ```csharp
@@ -106,3 +106,7 @@ decimal spent = groceryExpenses.Sum(e => e.Amount);
 // Utilize the extensions to calculate values between periods:
 decimal spentOnSummer = groceryExpenses.BetweenPeriods(2023, 6, 2023, 8).Sum(t => t.Amount);
 ```
+
+
+## License
+This project is distributed under the MIT license.

@@ -11,10 +11,10 @@ namespace BudgetWebApi.Controllers;
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly ILogger<TransactionsController> _logger;
+    private readonly ILogger<UserController> _logger;
     private readonly UserService _userService;
 
-    public UserController(ILogger<TransactionsController> logger, UserService userService)
+    public UserController(ILogger<UserController> logger, UserService userService)
     {
         _logger = logger;
         _userService = userService;

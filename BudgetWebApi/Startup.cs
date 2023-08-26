@@ -31,17 +31,7 @@ public class Startup
             });
         });
         
-        
-        
-        // Json conversion options to be used by the controllers
-        services.AddControllers().AddJsonOptions(options =>
-        {
-            options.JsonSerializerOptions.MaxDepth = 2;
-            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-        });
-        
-        
-        
+        services.AddControllers();
         
         // Services to support Swagger
         services.AddEndpointsApiExplorer();

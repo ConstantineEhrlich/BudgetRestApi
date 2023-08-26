@@ -22,11 +22,11 @@ public class UserController : ControllerBase
     
     
     [HttpPost("signup")]
-    public IActionResult SignUp([FromBody] Dto.SignUp payload)
+    public IActionResult SignUp([FromBody] SignUp payload)
     {
         try
         {
-            User u = _userService.CreateUser(payload.Id, payload.Name, payload.Password);
+            User u = _userService.CreateUser(payload.Id, payload.Name, payload.Password, payload.Email);
             return Ok(new { Message = $"User {payload.Id} created successfully!"});
         }
         catch (ArgumentException e)
@@ -41,9 +41,8 @@ public class UserController : ControllerBase
 
 
     [HttpPost("login")]
-    public IActionResult SignIn([FromBody] Dto.SignIn payload)
+    public IActionResult SignIn([FromBody] SignIn payload)
     {
-        // Check if user exists
         User u;
         try
         {
@@ -90,8 +89,6 @@ public class UserController : ControllerBase
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
-            Console.WriteLine(e.InnerException.Message);
             return StatusCode(500, new { Message = "Unexpected error occured"});
         }
     }

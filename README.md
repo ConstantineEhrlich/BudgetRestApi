@@ -1,8 +1,8 @@
-# EFBudgetModel
+# Budget REST API
 
-EFBudgetModel is a basic entity model for a budgeting system.
-It's designed to manage financial transactions, categories, users, and budget files.
-The model is built using C# and leverages Entity Framework for database interactions.
+Budget REST API is a budget management system.
+It's designed to manage financial Transactions, which are recorded in the Budget Files under a chosen Category. The system also provides user authentication using JWT tokens.
+The model is built using C# and leverages ASP.Net for web-server and Entity Framework for database interactions.
 
 ## Structure
 
@@ -19,11 +19,43 @@ The model is built using C# and leverages Entity Framework for database interact
 - **Interfaces**: Contains the `IPeriodic` interface, which represents a periodic entity with year and period properties.
 - **Extensions**: Includes extension methods for periodic transactions, such as filtering by period.
 
-### UnitTests
-- **BudgetModelTests**: Contains unit tests for creating, reading, and managing users, categories, budget files, and transactions.
-- **Helpers**: Provides helper methods for unit tests, such as getting the database path and context.
+### BudgetServices
+Provides data access services:
+- UserService - registration, password verification of the users
+- BudgetFileService - get, add, update and delete (deactivate) the Budget File
+- CategoryService
+- TransactionService
+
+### BudgetWebApi
+Provides REST API with the following endpoints:
+
+| Endpoint route                                    | Method | DTO               | Description                            |
+|:--------------------------------------------------|:------:|-------------------|:---------------------------------------|
+| /user/signup                                      |  POST  | SignUp            | Creates a new user                     |
+| /user/login                                       |  POST  | SignIn            | Authenticates the user                 |
+| /user/<user-id>                                   |  GET   |                   | Gets information about user            |
+| /user/<user-id>                                   |  PUT   |                   | Updates the information about the user |
+| /budget                                           |  GET   |                   | Gets the list of budgets               |
+| /budget/add                                       |  POST  | BudgetFileAdd     | Adds a new budget                      |
+| /budget/<budget-id>                               |  GET   |                   | Gets specific budget                   |
+| /budget/<budget-id>                               |  PUT   | BudgetFileUpdate  | Updates the details of the budget      |
+| /budget/<budget-id>                               | DELETE |                   | Sets the budget to status "deleted"    |
+| /budget/<budget-id>/categories                    |  GET   |                   | Gets all categories for the budget     |
+| /budget/<budget-id>/categories/add                |  POST  | CategoryAdd       | Adds a category to the budget          |
+| /budget/<budget-id>/categories/<category-id>      |  GET   |                   | Gets specific category                 |
+| /budget/<budget-id>/categories/<category-id>      |  PUT   | CategoryUpdate    | Updates the details of the category    |
+| /budget/<budget-id>/categories/<category-id>      | DELETE |                   | Sets the category to status "inactive" |
+| /budget/<budget-id>/owners                        |  GET   |                   | Gets the owners of the budget          |
+| /budget/<budget-id>/owners/add                    |  POST  | BudgetOwnerAdd    | Adds a new owner to the budget         |
+| /budget/<budget-id>/owners/<user-id>              | DELETE |                   | Removes user from the owners           |
+| /budget/<budget-id>/transactions                  |  GET   |                   | Gets all transactions for the budget   |
+| /budget/<budget-id>/transactions/add              |  POST  | TransactionAdd    | Adds new transaction                   |
+| /budget/<budget-id>/transactions/<transaction-id> |  GET   |                   | Gets specific transaction              |
+| /budget/<budget-id>/transactions/<transaction-id> |  PUT   | TransactionUpdate | Updates transaction details            |
+
 
 ## Usage Examples
+This section shows direct programmatic manipulation with the database through
 
 ### Initialization
 ```csharp

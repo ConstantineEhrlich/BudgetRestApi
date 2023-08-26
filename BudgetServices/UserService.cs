@@ -20,7 +20,7 @@ public class UserService
         _passwordHasher = passwordHasher;
     }
 
-    public User CreateUser(string id, string name, string password)
+    public User CreateUser(string id, string name, string password, string email = "")
     {
         if (string.IsNullOrEmpty(id))
             throw new ArgumentException("Id can't be empty", nameof(id));
@@ -31,7 +31,10 @@ public class UserService
         if (_context.Users!.FirstOrDefault(u => u.Id == id) is not null)
             throw new ArgumentException("User already exists!", nameof(id));
 
-        User u = new User(id, name);
+        User u = new User(id, name)
+        {
+            Email = email,
+        };
         u.PasswordHash = _passwordHasher.HashPassword(u, password);
         _context.Add(u);
         _context.SaveChanges();
@@ -92,7 +95,7 @@ public class UserService
 
     public string GenerateJwtKey(User user)
     {
-        string jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? "testkey";
+        string jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? "ThisIsAVerySecretKeyThatImUsingHere";
         byte[] byteJwtKey = Encoding.ASCII.GetBytes(jwtKey);
         JwtSecurityTokenHandler tokenHandler = new();
         SecurityTokenDescriptor descriptor = new()

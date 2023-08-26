@@ -17,7 +17,7 @@
       "applicationUrl": "http://localhost:5244",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "JWT_KEY": "very-secret-key"
+        "JWT_KEY": "ThisIsAVerySecretKeyThatImUsingHere"
       }
     },
     "https": {

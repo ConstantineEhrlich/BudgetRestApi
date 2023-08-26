@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using BudgetModel.Models;
 using BudgetServices;
+using BudgetWebApi.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +22,7 @@ public class UserController : ControllerBase
     
     
     [HttpPost("signup")]
-    public IActionResult SignUp([FromBody] ClientDto.SignUp payload)
+    public IActionResult SignUp([FromBody] Dto.SignUp payload)
     {
         try
         {
@@ -40,7 +41,7 @@ public class UserController : ControllerBase
 
 
     [HttpPost("login")]
-    public IActionResult SignIn([FromBody] ClientDto.SignIn payload)
+    public IActionResult SignIn([FromBody] Dto.SignIn payload)
     {
         // Check if user exists
         User u;
@@ -107,7 +108,12 @@ public class UserController : ControllerBase
         try
         {
             User u = _userService.GetUser(userId ?? loggedUserId.Value);
-            return Ok(u);
+            return Ok(new UserDto()
+            {
+                Id = u.Id,
+                Email = u.Email,
+                Name = u.Name
+            });
         }
         catch (ArgumentException e)
         {

@@ -60,7 +60,7 @@ public class Startup
         
         
         // Read JWT key from the environment variables:
-        string key = System.Environment.GetEnvironmentVariable("JWT_KEY") ?? "testkey";
+        string key = System.Environment.GetEnvironmentVariable("JWT_KEY") ?? "ThisIsAVerySecretKeyThatImUsingHere";
         byte[] byteKey = Encoding.ASCII.GetBytes(key);
         
         // Authentication service
@@ -81,7 +81,7 @@ public class Startup
                 };
             });
         
-        // Password hashser
+        // Password hasher
         services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 
 

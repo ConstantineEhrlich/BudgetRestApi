@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-namespace BudgetWebApi.ClientDto;
+namespace BudgetWebApi.Dto;
 
 public class CategoryUpdate
 {

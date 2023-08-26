@@ -7,11 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
       <ProjectReference Include="..\BudgetModel\BudgetModel.csproj" />
       <ProjectReference Include="..\BudgetServices\BudgetServices.csproj" />
-
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.21" />
+      <PackageReference Include="Microsoft.IdentityModel" Version="7.0.0" />
     </ItemGroup>
-
 
 
 

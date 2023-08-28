@@ -93,7 +93,7 @@ public class UserService
         return target;
     }
 
-    public string GenerateJwtKey(User user)
+    public string GenerateJwtKey(User user, uint daysUntilExpiration)
     {
         string jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? "ThisIsAVerySecretKeyThatImUsingHere";
         byte[] byteJwtKey = Encoding.ASCII.GetBytes(jwtKey);
@@ -104,7 +104,7 @@ public class UserService
             {
                 new Claim(ClaimTypes.Name, user.Id),
             }),
-            Expires = DateTime.UtcNow.AddDays(7),
+            Expires = DateTime.UtcNow.AddDays(daysUntilExpiration),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(byteJwtKey), SecurityAlgorithms.HmacSha256Signature)
         };
         SecurityToken token = tokenHandler.CreateToken(descriptor);

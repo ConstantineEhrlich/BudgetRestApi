@@ -29,29 +29,29 @@ Provides data access services:
 ### BudgetWebApi
 Provides REST API with the following endpoints:
 
-| Endpoint route                                    | Method | DTO               | Description                            |
-|:--------------------------------------------------|:------:|-------------------|:---------------------------------------|
-| /user/signup                                      |  POST  | SignUp            | Creates a new user                     |
-| /user/login                                       |  POST  | SignIn            | Authenticates the user                 |
-| /user/{user-id}                                   |  GET   |                   | Gets information about user            |
-| /user/{user-id}                                   |  PUT   |                   | Updates the information about the user |
-| /budget                                           |  GET   |                   | Gets the list of budgets               |
-| /budget/add                                       |  POST  | BudgetFileAdd     | Adds a new budget                      |
-| /budget/{budget-id}                               |  GET   |                   | Gets specific budget                   |
-| /budget/{budget-id}                               |  PUT   | BudgetFileUpdate  | Updates the details of the budget      |
-| /budget/{budget-id}                               | DELETE |                   | Sets the budget to status "deleted"    |
-| /budget/{budget-id}/categories                    |  GET   |                   | Gets all categories for the budget     |
-| /budget/{budget-id}/categories/add                |  POST  | CategoryAdd       | Adds a category to the budget          |
-| /budget/{budget-id}/categories/{category-id}      |  GET   |                   | Gets specific category                 |
-| /budget/{budget-id}/categories/{category-id}      |  PUT   | CategoryUpdate    | Updates the details of the category    |
-| /budget/{budget-id}/categories/{category-id}      | DELETE |                   | Sets the category to status "inactive" |
-| /budget/{budget-id}/owners                        |  GET   |                   | Gets the owners of the budget          |
-| /budget/{budget-id}/owners/add                    |  POST  | BudgetOwnerAdd    | Adds a new owner to the budget         |
-| /budget/{budget-id}/owners/{user-id}              | DELETE |                   | Removes user from the owners           |
-| /budget/{budget-id}/transactions                  |  GET   |                   | Gets all transactions for the budget   |
-| /budget/{budget-id}/transactions/add              |  POST  | TransactionAdd    | Adds new transaction                   |
-| /budget/{budget-id}/transactions/{transaction-id} |  GET   |                   | Gets specific transaction              |
-| /budget/{budget-id}/transactions/{transaction-id} |  PUT   | TransactionUpdate | Updates transaction details            |
+| Endpoint route                                    | Method | DTO               | Description                               |
+|:--------------------------------------------------|:------:|-------------------|:------------------------------------------|
+| /user/signup                                      |  POST  | SignUp            | Creates a new user                        |
+| /user/login                                       |  POST  | SignIn            | Authenticates the user                    |
+| /user/logout                                      |  POST  | {Empty}           | Sends a cookie with an empty access_token |
+| /user/{user-id}                                   |  GET   |                   | Gets information about user               |
+| /budget                                           |  GET   |                   | Gets the list of budgets                  |
+| /budget/add                                       |  POST  | BudgetFileAdd     | Adds a new budget                         |
+| /budget/{budget-id}                               |  GET   |                   | Gets specific budget                      |
+| /budget/{budget-id}                               |  PUT   | BudgetFileUpdate  | Updates the details of the budget         |
+| /budget/{budget-id}                               | DELETE |                   | Sets the budget to status "deleted"       |
+| /budget/{budget-id}/categories                    |  GET   |                   | Gets all categories for the budget        |
+| /budget/{budget-id}/categories/add                |  POST  | CategoryAdd       | Adds a category to the budget             |
+| /budget/{budget-id}/categories/{category-id}      |  GET   |                   | Gets specific category                    |
+| /budget/{budget-id}/categories/{category-id}      |  PUT   | CategoryUpdate    | Updates the details of the category       |
+| /budget/{budget-id}/categories/{category-id}      | DELETE |                   | Sets the category to status "inactive"    |
+| /budget/{budget-id}/owners                        |  GET   |                   | Gets the owners of the budget             |
+| /budget/{budget-id}/owners/add                    |  POST  | BudgetOwnerAdd    | Adds a new owner to the budget            |
+| /budget/{budget-id}/owners/{user-id}              | DELETE |                   | Removes user from the owners              |
+| /budget/{budget-id}/transactions                  |  GET   |                   | Gets all transactions for the budget      |
+| /budget/{budget-id}/transactions/add              |  POST  | TransactionAdd    | Adds new transaction                      |
+| /budget/{budget-id}/transactions/{transaction-id} |  GET   |                   | Gets specific transaction                 |
+| /budget/{budget-id}/transactions/{transaction-id} |  PUT   | TransactionUpdate | Updates transaction details               |
 
 
 ## Usage Examples

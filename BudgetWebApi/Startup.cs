@@ -16,6 +16,7 @@ public class Startup
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
+        Configuration["JWT_KEY"] = System.Environment.GetEnvironmentVariable("JWT_KEY") ?? "ThisIsAVerySecretKeyThatImUsingHere";
     }
 
     public void ConfigureServices(IServiceCollection services)
@@ -49,27 +50,50 @@ public class Startup
             options.UseSqlite(Configuration.GetConnectionString("Default")));
         
         
-        // Read JWT key from the environment variables:
-        string key = System.Environment.GetEnvironmentVariable("JWT_KEY") ?? "ThisIsAVerySecretKeyThatImUsingHere";
-        byte[] byteKey = Encoding.ASCII.GetBytes(key);
+        // Read JWT key from the config
+        string jwtKey = Configuration["JWT_KEY"];
+        byte[] byteKey = Encoding.ASCII.GetBytes(jwtKey);
         
         // Authentication service
         services.AddAuthentication(options =>
         {
+            // Set the default scheme for authentication to JwtBearer
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer(options =>
             {
-                options.RequireHttpsMetadata = false;
+                // Require authentication through https
+                options.RequireHttpsMetadata = true;
+                // Save the token for later use in the request pipeline
                 options.SaveToken = true;
+                // Set up the token validation parameters
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuerSigningKey = true,
+                    // Resolve the jwtKey that is stored in the config
                     IssuerSigningKey = new SymmetricSecurityKey(byteKey),
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
+                // Custom event handling for the JwtBearer middleware
+                options.Events = new JwtBearerEvents
+                {
+                    // This event is invoked when the middleware receives a message (in this case, an HTTP request)
+                    OnMessageReceived = context =>
+                    {
+                        if (context.Request.Cookies.TryGetValue("access_token", out string token))
+                        {
+                            // If the token is found in the cookie, use it for authentication
+                            context.Token = token;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+                
+                
+                
             });
+        
         
         // Password hasher
         services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -90,6 +114,8 @@ public class Startup
 
         app.UseHttpsRedirection();
         app.UseRouting();
+        
+        
         app.UseAuthentication();
         app.UseAuthorization();
         

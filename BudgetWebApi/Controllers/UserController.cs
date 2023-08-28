@@ -11,6 +11,8 @@ namespace BudgetWebApi.Controllers;
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
+    private const uint LOGIN_EXPIRATION_DAYS = 7;
+    
     private readonly ILogger<UserController> _logger;
     private readonly UserService _userService;
 
@@ -72,8 +74,21 @@ public class UserController : ControllerBase
         {
             if (_userService.VerifyPassword(u, payload.Password))
             {
+                // Update failed login counters
                 _userService.SuccessLogin(u);
-                string jwtToken = _userService.GenerateJwtKey(u);
+                // Obtain JWToken
+                string jwtToken = _userService.GenerateJwtKey(u, LOGIN_EXPIRATION_DAYS);
+
+                // Prepare cookie with the token
+                CookieOptions cookie = new()
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddDays(LOGIN_EXPIRATION_DAYS),
+                };
+                Response.Cookies.Append("access_token", jwtToken, cookie);
+                
                 return Ok(new
                 {
                     Token = jwtToken,
@@ -92,6 +107,13 @@ public class UserController : ControllerBase
             return StatusCode(500, new { Message = "Unexpected error occured"});
         }
     }
+
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        Response.Cookies.Delete("access_token");
+        return Ok("Good bye!");
+    }
     
     [HttpGet("profile/{userId?}")]
     public IActionResult GetProfile(string? userId)
@@ -101,7 +123,6 @@ public class UserController : ControllerBase
         {
             return Unauthorized();
         }
-
         try
         {
             User u = _userService.GetUser(userId ?? loggedUserId.Value);

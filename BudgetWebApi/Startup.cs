@@ -24,13 +24,15 @@ public class Startup
         // Cors allow requesting the API from the domain that is different than API domain
         services.AddCors(options =>
         {
-            options.AddPolicy("AllowAll", builder =>
+            options.AddPolicy("DynamicCorsPolicy", builder =>
             {
-                builder.AllowAnyOrigin();
-                builder.AllowAnyMethod();
-                builder.AllowAnyHeader();
+                builder.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials()
+                    .SetIsOriginAllowed(origin => true); // allow any origin
             });
         });
+
         
         services.AddControllers();
         
@@ -109,7 +111,7 @@ public class Startup
             app.UseDeveloperExceptionPage();
             app.UseSwagger();
             app.UseSwaggerUI();
-            app.UseCors("AllowAll");
+            app.UseCors("DynamicCorsPolicy");
         }
 
         app.UseHttpsRedirection();

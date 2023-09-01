@@ -10,6 +10,8 @@ public class BudgetDto
     public bool? IsPrivate { get; set; }
     
     public List<UserDto> Owners { get; set; }
+    
+    public List<CategoryDto> Categories { get; set; }
 
     public BudgetDto(BudgetFile b)
     {
@@ -18,6 +20,7 @@ public class BudgetDto
         Description = b.Description;
         IsPrivate = b.IsPrivate;
         Owners = b.Owners.Select(o => new UserDto(o)).ToList();
+        Categories = b.Categories.Select(c => new CategoryDto(c)).ToList();
     }
     
 }

@@ -23,13 +23,13 @@ public class UserService
     public User CreateUser(string id, string name, string password, string email = "")
     {
         if (string.IsNullOrEmpty(id))
-            throw new ArgumentException("Id can't be empty", nameof(id));
+            throw new ArgumentException("Id can't be empty");
 
         if (string.IsNullOrEmpty(name))
-            throw new ArgumentException("Name can't be empty", nameof(name));
+            throw new ArgumentException("Name can't be empty");
 
         if (_context.Users!.FirstOrDefault(u => u.Id == id) is not null)
-            throw new ArgumentException("User already exists!", nameof(id));
+            throw new ArgumentException("User already exists!");
 
         User u = new User(id, name)
         {
@@ -78,7 +78,7 @@ public class UserService
         
         User? u = _context.Users!.FirstOrDefault(usr => usr.Id == id);
         if (u is null)
-            throw new ArgumentException($"User {id} does not exist!", nameof(id));
+            throw new ArgumentException($"User {id} does not exist!");
 
         return u;
     }

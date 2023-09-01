@@ -8,7 +8,6 @@ using BudgetWebApi.Dto;
 namespace BudgetWebApi.Controllers;
 
 [ApiController]
-[Authorize]
 [Route("budgets")]
 public class TransactionController : ControllerBase
 {
@@ -22,6 +21,7 @@ public class TransactionController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     [Route("{budgetId}/transactions/add")]
     public IActionResult Add([FromBody] Dto.TransactionAdd payload, string budgetId)
     {

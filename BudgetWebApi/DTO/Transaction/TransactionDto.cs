@@ -7,8 +7,8 @@ public class TransactionDto
 {
     public string? Id { get; set; }
     public string? BudgetFileId { get; set; }
-    public TransactionType? Type { get; set; }
-    public DateTime? Date { get; set; }
+    public TransactionType? TransactionType { get; set; }
+    public DateTime? TransactionDate { get; set; }
     public DateTime? RecordedAt { get; set; }
     public string? OwnerId { get; set; }
     public string? AuthorId { get; set; }
@@ -22,8 +22,8 @@ public class TransactionDto
     {
         Id = t.Id;
         BudgetFileId = t.BudgetFileId;
-        Type = t.Type;
-        Date = t.Date;
+        TransactionType = t.Type;
+        TransactionDate = t.Date;
         RecordedAt = t.RecordedAt;
         OwnerId = t.OwnerId;
         AuthorId = t.AuthorId;

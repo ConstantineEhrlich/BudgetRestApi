@@ -84,13 +84,14 @@ public class UserController : ControllerBase
                 {
                     HttpOnly = true,
                     Secure = true,
-                    SameSite = SameSiteMode.Strict,
+                    SameSite = SameSiteMode.None,
                     Expires = DateTime.UtcNow.AddDays(LOGIN_EXPIRATION_DAYS),
                 };
                 Response.Cookies.Append("access_token", jwtToken, cookie);
                 
                 return Ok(new
                 {
+                    SuccessLogin = true,
                     Token = jwtToken,
                     Message = $"User {payload.UserId} signed in successfully!"
                 });
@@ -111,7 +112,13 @@ public class UserController : ControllerBase
     [HttpPost("logout")]
     public IActionResult Logout()
     {
-        Response.Cookies.Delete("access_token");
+        CookieOptions cookie = new()
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+        };
+        Response.Cookies.Delete("access_token", cookie);
         return Ok("Good bye!");
     }
     

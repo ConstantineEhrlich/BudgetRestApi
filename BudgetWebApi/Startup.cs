@@ -32,6 +32,7 @@ public class Startup
                     .SetIsOriginAllowed(origin => true); // allow any origin
             });
         });
+        
 
         
         services.AddControllers();

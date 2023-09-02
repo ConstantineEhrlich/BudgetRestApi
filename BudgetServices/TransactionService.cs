@@ -26,7 +26,7 @@ public class TransactionService
                                string categoryId,
                                decimal amount,
                                string? description = "",
-                               TransactionType? type = null,
+                               TransactionType type = (TransactionType.Expense),
                                string? ownerId = null,
                                DateTime? date = null,
                                int? year = null,
@@ -40,7 +40,7 @@ public class TransactionService
         Category cat = _categoryService.GetCategory(budgetFileId, categoryId, requestingUserId);
         DateTime entryDate = date ?? DateTime.Now;
         
-        Transaction t = new(budgetFile, author, type ?? TransactionType.Expense, cat, description ?? string.Empty, amount)
+        Transaction t = new(budgetFile, author, type, cat, description ?? string.Empty, amount)
         {
             OwnerId = owner.Id,
             Date = date ?? entryDate,

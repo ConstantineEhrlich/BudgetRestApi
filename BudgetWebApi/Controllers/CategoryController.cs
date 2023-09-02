@@ -29,7 +29,7 @@ public class CategoryController : ControllerBase
         try
         {
             return Ok(new Dto.CategoryDto(_categoryService.AddCategory(budgetId, payload.CategoryId, requestingUser,
-            payload.Description)));
+            payload.Description, payload.DefaultType)));
         }
         catch (ArgumentException e)
         {
@@ -91,6 +91,27 @@ public class CategoryController : ControllerBase
             c.DefaultType = (TransactionType)payload.DefaultType;
             
             return Ok(new Dto.CategoryDto(_categoryService.UpdateCategory(budgetId, catId, requestingUser, c)));
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(new { Message = e.Message });
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, new { Message = "Internal server error" });
+        }
+    }
+
+
+    [HttpGet]
+    [Route("{budgetId}/categories/{catId}/changeStatus")]
+    public IActionResult ChangeStatus(string budgetId, string catId)
+    {
+        string requestingUser = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+        try
+        {
+            _categoryService.ChangeStatus(budgetId, catId, requestingUser);
+            return Ok();
         }
         catch (ArgumentException e)
         {

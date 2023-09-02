@@ -1,4 +1,5 @@
 using BudgetModel;
+using BudgetModel.Enums;
 using BudgetModel.Models;
 
 namespace BudgetServices;
@@ -14,12 +15,24 @@ public class CategoryService
         _budgetService = budgetService;
     }
 
-    public Category AddCategory(string budgetFileId, string categoryId, string requestingUserId, string? description = null)
+    public void ChangeStatus(string budgetFileId, string categoryId, string requestingUserId)
+    {
+        Category cat = GetCategory(budgetFileId, categoryId, requestingUserId);
+        cat.IsActive = !cat.IsActive;
+        _context.SaveChanges();
+    }
+
+    public Category AddCategory(string budgetFileId, string categoryId, string requestingUserId, string? description = null, TransactionType defaultType = TransactionType.Expense)
     {
         _budgetService.ThrowIfNotOwner(requestingUserId, budgetFileId);
-        Category cat = new(budgetFileId, categoryId, description ?? string.Empty);
-        if (_budgetService.GetBudgetFile(budgetFileId, requestingUserId).Categories.Contains(cat))
-            throw new ArgumentException("Category already present!", nameof(categoryId));
+        if (_context.Categories.Any(c => c.Id == categoryId && c.BudgetFileId == budgetFileId))
+        {
+            throw new ArgumentException("Category already exists!");
+        }
+        Category cat = new(budgetFileId, categoryId, description ?? string.Empty)
+        {
+            DefaultType = defaultType,
+        };
 
         _context.Add(cat);
         _context.SaveChanges();

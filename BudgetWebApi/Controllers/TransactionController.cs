@@ -33,7 +33,7 @@ public class TransactionController : ControllerBase
                                                                                   payload.CategoryId,
                                                                                   payload.Amount,
                                                                                   payload.Description,
-                                                                                  payload.TransactionType as TransactionType?,
+                                                                                  (TransactionType)payload.TransactionType,
                                                                                   payload.OwnerId,
                                                                                   payload.Date,
                                                                                   payload.Year,
@@ -56,7 +56,10 @@ public class TransactionController : ControllerBase
         string requestingUser = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
         try
         {
-            return Ok(_transactionService.GetAllTransactions(budgetId, requestingUser).Select(t=>new Dto.TransactionDto(t)));
+            return Ok(_transactionService
+                .GetAllTransactions(budgetId, requestingUser)
+                .OrderByDescending(t => t.Date)
+                .Select(t=>new Dto.TransactionDto(t)));
         }
         catch (ArgumentException e)
         {

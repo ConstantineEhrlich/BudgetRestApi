@@ -1,6 +1,8 @@
+using System.Text;
 using BudgetModel;
 using BudgetModel.Models;
 using Microsoft.EntityFrameworkCore;
+using Slugify;
 
 namespace BudgetServices;
 
@@ -18,12 +20,10 @@ public class BudgetFileService
     public BudgetFile AddBudgetFile(string description, string requestingUserId)
     {
         User u = _userService.GetUser(requestingUserId);
-        BudgetFile b = new(description)
-        {
-            Slug = CreateSlug(description)
-        };
+        BudgetFile b = new(description);
         b.Owners.Add(u);
         _context.Add(b);
+        b.Slug = CreateSlug(b.Description);
         _context.SaveChanges();
         return b;
     }
@@ -113,19 +113,9 @@ public class BudgetFileService
     
     private string CreateSlug(string description)
     {
-        string[] words = description.Split(' ').Take(3).ToArray();
-        string slug = string.Join("-", words).ToLower();
-
-        if (_context.Budgets!.Select(b => b.Slug).Contains(slug))
-        {
-            string date = DateTime.Now.ToString("dd-MMM-yyyy");
-            return slug + "-" + date;
-        }
-        else
-        {
-            return slug;
-        }
-        
+        SlugHelper slugify = new();
+        string[] desc = description.Split(' ').Take(3).ToArray();
+        return slugify.GenerateSlug(string.Join(" ", desc));
     }
 
     public void ThrowIfNotOwner(string userId, string budgetId)

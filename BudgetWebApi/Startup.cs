@@ -2,10 +2,13 @@ using System.Text;
 using System.Text.Json.Serialization;
 using BudgetModel.Models;
 using BudgetServices;
+using BudgetWebApi.Sockets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+
+using BudgetWebApi.Sockets;
 
 namespace BudgetWebApi;
 
@@ -101,7 +104,10 @@ public class Startup
         // Password hasher
         services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 
-
+        // Updates socket manager
+        services.AddSingleton<BudgetUpdateManager>();
+        // Socket cleanup service - runs in background
+        services.AddHostedService<CleanupService<BudgetUpdateManager>>();
 
     }
 
@@ -119,9 +125,21 @@ public class Startup
         app.UseRouting();
         
         
+        // Add websocket for transaction updates
+        app.UseWebSockets(new WebSocketOptions()
+        {
+            // These are defaults that might be changed
+            KeepAliveInterval = TimeSpan.FromMinutes(2),
+            // AllowedOrigins = {  }
+        });
+            
+            
         app.UseAuthentication();
         app.UseAuthorization();
         
-        app.UseEndpoints(ep => ep.MapControllers());
+        app.UseEndpoints(ep =>
+        {
+            ep.MapControllers();
+        });
     }
 }

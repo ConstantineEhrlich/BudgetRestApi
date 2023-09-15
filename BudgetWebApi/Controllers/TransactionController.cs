@@ -1,9 +1,12 @@
+using System.Net.WebSockets;
 using BudgetServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Text;
 using BudgetModel.Enums;
 using BudgetWebApi.Dto;
+using BudgetWebApi.Sockets;
 
 namespace BudgetWebApi.Controllers;
 
@@ -13,12 +16,33 @@ public class TransactionController : ControllerBase
 {
     private readonly ILogger<TransactionController> _logger;
     private readonly TransactionService _transactionService;
+    private readonly BudgetUpdateManager _updateManager;
 
-    public TransactionController(ILogger<TransactionController> logger, TransactionService transactionService)
+    public TransactionController(ILogger<TransactionController> logger, TransactionService transactionService, BudgetUpdateManager updateManager)
     {
         _logger = logger;
         _transactionService = transactionService;
+        _updateManager = updateManager;
     }
+
+    [Route("{budgetId}/updates")]
+    public async Task Get(string budgetId)
+    {
+        if (HttpContext.WebSockets.IsWebSocketRequest)
+        {
+            WebSocket socket = await HttpContext.WebSockets.AcceptWebSocketAsync();
+            _updateManager.AddSocket(budgetId, socket);
+            await SocketListener.Listen(socket);
+        }
+        else
+        {
+            HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+        }
+    }
+    
+    
+    
+    
 
     [HttpPost]
     [Authorize]
@@ -28,6 +52,7 @@ public class TransactionController : ControllerBase
         string requestingUser = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
         try
         {
+            _updateManager.BroadcastUpdate(budgetId);
             return Ok(new Dto.TransactionDto(_transactionService.AddTransaction(budgetId,
                                                                                   requestingUser,
                                                                                   payload.CategoryId,

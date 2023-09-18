@@ -9,6 +9,12 @@ namespace BudgetWebApi.Sockets;
 public class BudgetUpdateManager: IUpdateManager
 {
     private readonly ConcurrentDictionary<string, List<WebSocket>> _sockets = new();
+    private readonly ILogger<BudgetUpdateManager> _logger;
+
+    public BudgetUpdateManager(ILogger<BudgetUpdateManager> logger)
+    {
+        _logger = logger;
+    }
 
     public void AddSocket(string budgetId, WebSocket socket)
     {
@@ -40,10 +46,18 @@ public class BudgetUpdateManager: IUpdateManager
     }
     public void RemoveDeadSockets()
     {
+        int examined = 0;
+        int left = 0;
         foreach (var sockets in _sockets.Values)
         {
+            examined += sockets.Count;
             sockets.RemoveAll(s => s.State != WebSocketState.Open);
+            left += sockets.Count;
         }
+
+        string checkStatus = $"Removing dead sockets: {examined} checked, {left} left open";
+        Console.WriteLine(checkStatus);
+        _logger.Log(LogLevel.Information, checkStatus);
     }
 
     

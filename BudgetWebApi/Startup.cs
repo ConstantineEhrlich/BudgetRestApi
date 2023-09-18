@@ -1,17 +1,18 @@
 using System.Text;
-using System.Text.Json.Serialization;
 using BudgetModel.Models;
 using BudgetServices;
+using static BudgetServices.EdmModel;
 using BudgetWebApi.Sockets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
-using BudgetWebApi.Sockets;
+using Microsoft.AspNetCore.OData;
+
+
 
 namespace BudgetWebApi;
-
 public class Startup
 {
     public IConfiguration Configuration { get; init; }
@@ -36,15 +37,12 @@ public class Startup
             });
         });
         
-
-        
-        services.AddControllers();
+        // Add controllers and odata
+        services.AddControllers().AddOData(options => options.AddRouteComponents("odata", GetEdmModel()));
         
         // Services to support Swagger
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
-        
-        
         
         
         // Data access services

@@ -42,7 +42,6 @@ public class Startup
         
         // Services to support Swagger
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
         
         
         
@@ -116,8 +115,6 @@ public class Startup
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
-            app.UseSwagger();
-            app.UseSwaggerUI();
             app.UseCors("DynamicCorsPolicy");
         }
 

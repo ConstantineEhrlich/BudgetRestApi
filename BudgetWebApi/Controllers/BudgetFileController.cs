@@ -34,6 +34,22 @@ public class BudgetFileController : ControllerBase
         }
     }
 
+    [HttpGet]
+    [Authorize]
+    [Route("my")]
+    public IActionResult GetMy()
+    {
+        string? requestingUser = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+        try
+        {
+            return Ok(_budgetFileService.GetOwnBudgetFiles(requestingUser).Select(b => new Dto.BudgetDto(b)));
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(new { Message = e.Message });
+        }
+    }
+
     [HttpPost]
     [Authorize]
     [Route("new")]

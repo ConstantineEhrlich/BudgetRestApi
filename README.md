@@ -1,8 +1,30 @@
 # Budget REST API
 
 Budget REST API is a budget management system.
-It's designed to manage financial Transactions, which are recorded in the Budget Files under a chosen Category. The system also provides user authentication using JWT tokens.
-The model is built using C# and leverages ASP.Net for web-server and Entity Framework for database interactions.
+
+Using the application, the **Users** can recors and update financial **Transactions**, which are stored in the **Budget Files** under a chosen **Category**.
+
+- The application is written on C# and leverages ASP.Net for web-server and Entity Framework for database interactions.
+- The application and database are configured for containerized deployment on Kubernetes cluster.
+- The API provides an authentication mechanism based on a JWT token, which may be transferred directly or in the cookie (for safe authentication in a web context).   
+
+## Usage
+
+### Local run
+The application requires database to run. You may change the variables in the `BudgetWebApi/Properties/launchSettings.json` to point the app to the database. Alternatively, you can edit `BudgetWebApi/Startup.cs` to use SQLite. 
+
+- In the `BudgetModel` directory, execute `dotnet ef database update` to set up the database.
+- In the `BudgetWebApi` directory, execute `dotnet run` to run the application.
+
+### Service deployment
+Use `make` to build, deploy and expose the application on the kubernetes cluster.
+- `make kube-secrets` - creates kubernetes secrets (required by other deployments)
+- `make minikube-images` - points the docker to the minikube environment and builds the images for local deployment
+- `make remote-images` - builds the images for amd64 platform and pushes into the docker registry
+- `make restart` - restarts the service (reloads the image)
+- `make listen-postgres` - exposes the postgres database to the local port 5432
+- `make listen-api` - exposes the application on the port 8765 
+
 
 ## Structure
 
@@ -52,60 +74,6 @@ Provides REST API with the following endpoints:
 | /budget/{budget-id}/transactions/add              |  POST  | TransactionAdd    | Adds new transaction                      |
 | /budget/{budget-id}/transactions/{transaction-id} |  GET   |                   | Gets specific transaction                 |
 | /budget/{budget-id}/transactions/{transaction-id} |  PUT   | TransactionUpdate | Updates transaction details               |
-
-
-## Usage Examples
-This section shows direct programmatic manipulation with the database through the Entity Framework
-
-### Initialization
-```csharp
-// Initialize the database:
-string databasePath = "/Path/to/the/database.db";
-BudgetModel.Context context = new(databasePath);
-```
-
-### Create master data
-```csharp
-// Create the users:
-User usr = new User("john", "John Wilson");
-context.Users.Add(usr);
-context.SaveChanges();
-
-// Create the categories:
-context.Categories.Add(Category(id: "salary", description: "Salary"));
-context.Categories.Add(Category("rent", "Rent"));
-context.Categories.Add(Category("groceries", "Groceries"));
-context.SaveChanges();
-
-// Create the budget file:
-BudgetFile budget = new("Default budget");
-budget.Owners.Add(usr);
-context.BudgetFiles.Add(budget);
-```
-
-### Record transaction
-```csharp
-// Detailed constructor:
-Transaction t1 = new(budget, owner, author, date, type, category, amount);
-context.Transactions.Add(t1);
-context.SaveChanges();
-
-//Simplified constructor, assumes that the author of the transaction is its owner, and the date is current date:
-Transaction t2 = new(budget, author, type, cat, amount);
-context.Transactions.Add(t2);
-context.SaveChanges();
-```
-
-### Read data
-```csharp
-// Sum transactions for a specific category:
-Category cat = context.Categories.FirstOrDefault(c => c.Id == "groceries");
-var groceryExpenses = context.Transactions.Where(t => t.Category == cat);
-decimal spent = groceryExpenses.Sum(e => e.Amount);
-
-// Utilize the extensions to calculate values between periods:
-decimal spentOnSummer = groceryExpenses.BetweenPeriods(2023, 6, 2023, 8).Sum(t => t.Amount);
-```
 
 
 ## License

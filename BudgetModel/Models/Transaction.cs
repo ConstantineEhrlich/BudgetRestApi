@@ -50,7 +50,7 @@ public class Transaction: IPeriodic
         BudgetFileId = budget.Id;
         Type = type;
         Date = date;
-        RecordedAt = DateTime.Now;
+        RecordedAt = DateTime.UtcNow;
         OwnerId = owner.Id;
         AuthorId = author.Id;
         Year = Date.Year;

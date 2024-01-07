@@ -102,6 +102,12 @@ public class BudgetFileService
         return budgetFiles;
     }
 
+    public List<BudgetFile> GetOwnBudgetFiles(string requestingUserId)
+    {
+        return _context.Budgets?.Where(b => b.Owners.Select(o => o.Id).Contains(requestingUserId)).ToList()
+            ?? new List<BudgetFile>();
+    }
+    
     private bool IsOwner(string userId, string budgetId)
     {
         BudgetFile? b = _context.Budgets!.Include(budgetFile => budgetFile.Owners).FirstOrDefault(b => b.Id == budgetId);

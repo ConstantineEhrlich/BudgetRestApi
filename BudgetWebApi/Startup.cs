@@ -19,7 +19,8 @@ public class Startup
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
-        Configuration["JWT_KEY"] = System.Environment.GetEnvironmentVariable("JWT_KEY") ?? "ThisIsAVerySecretKeyThatImUsingHere";
+        Configuration["JWT_KEY"] = System.Environment.GetEnvironmentVariable("JWT_KEY") ??
+                                   throw new KeyNotFoundException("JWT_KEY variable not set");
     }
 
     public void ConfigureServices(IServiceCollection services)
@@ -52,7 +53,8 @@ public class Startup
         services.AddScoped<CategoryService>();
         services.AddScoped<TransactionService>();
         services.AddDbContext<BudgetModel.Context>(options =>
-            options.UseSqlite(Configuration.GetConnectionString("Default")));
+            options.UseNpgsql(BudgetModel.Context.GetPostgresConnectionString()));
+            // options.UseSqlite(### Connection string)
         
         
         // Read JWT key from the config
@@ -68,7 +70,8 @@ public class Startup
         }).AddJwtBearer(options =>
             {
                 // Require authentication through https
-                options.RequireHttpsMetadata = true;
+                // disabled since the app runs in container
+                options.RequireHttpsMetadata = false;
                 // Save the token for later use in the request pipeline
                 options.SaveToken = true;
                 // Set up the token validation parameters
@@ -115,6 +118,10 @@ public class Startup
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
+            app.UseCors("DynamicCorsPolicy");
+        }
+        else
+        {
             app.UseCors("DynamicCorsPolicy");
         }
 

@@ -9,7 +9,11 @@
     <ItemGroup>
       <ProjectReference Include="..\BudgetModel\BudgetModel.csproj" />
       <ProjectReference Include="..\BudgetServices\BudgetServices.csproj" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.21" /> 
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.21" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.21">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference> 
       <PackageReference Include="Microsoft.IdentityModel" Version="7.0.0" />
 
 

@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-migrate-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: database-migrate-job
+          image: registry.digitalocean.com/budgetapp-registry/budget-migration:latest
+          imagePullPolicy: Always
+          env:
+            - name: POSTGRES_SERVER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+          command: ["dotnet", "ef", "database", "update"]
+      restartPolicy: OnFailure
+  backoffLimit: 4

@@ -44,7 +44,7 @@ public class UserService
     public void FailedLogin(User u)
     {
         u.FailedLoginCount++;
-        u.LastFailedLogin = DateTime.Now;
+        u.LastFailedLogin = DateTime.UtcNow;
         _context.SaveChanges();
     }
 

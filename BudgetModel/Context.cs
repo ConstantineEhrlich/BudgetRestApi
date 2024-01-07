@@ -1,40 +1,22 @@
 using BudgetModel.Models;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 
 namespace BudgetModel;
 
 public class Context : DbContext
 {
-    private readonly string _connStr = null!;
     public DbSet<User>? Users { get; internal set; }
     public DbSet<Transaction>? Transactions { get; internal set; }
     public DbSet<Category>? Categories { get; internal set; }
     public DbSet<BudgetFile>? Budgets { get; internal set; }
 
-    public Context(DbContextOptions<Context> options) : base(options)
-    {
-        
-    } 
-
-    public Context(string? dbPath, bool loadingMode = false)
-    {
-        SqliteConnectionStringBuilder connStr = new()
-        {
-            DataSource = dbPath,
-            ForeignKeys = !loadingMode,
-        };
-        _connStr = connStr.ConnectionString;
-    }
-
+    public Context(DbContextOptions<Context> options) : base(options) {}
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (_connStr is not null)
-        {
-            optionsBuilder.UseSqlite(_connStr);
-        }
         optionsBuilder.UseLazyLoadingProxies();
     }
 
@@ -59,6 +41,13 @@ public class Context : DbContext
             .Property(t => t.Amount)
             .HasConversion<double>();
 
+        modelBuilder.Entity<Transaction>()
+            .Property(t => t.Date)
+            .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+
+        modelBuilder.Entity<Transaction>()
+            .Property(t => t.RecordedAt)
+            .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
         modelBuilder.Entity<Category>()
             .HasKey(category => new { category.BudgetFileId, category.Id });
@@ -69,5 +58,22 @@ public class Context : DbContext
             .HasForeignKey(cat => cat.BudgetFileId);
 
     }
-    
+    public static string GetPostgresConnectionString()
+    {
+        string server = System.Environment.GetEnvironmentVariable("POSTGRES_SERVER") ??
+                        throw new KeyNotFoundException("POSTGRES_SERVER variable not set!");
+        string password = System.Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ??
+                        throw new KeyNotFoundException("POSTGRES_PASSWORD variable not set!");
+
+        NpgsqlConnectionStringBuilder builder = new()
+        {
+            Host = server,
+            Port = 5432,
+            Database = "budget",
+            Username = "user",
+            Password = password,
+        };
+
+        return builder.ConnectionString;
+    }
 }

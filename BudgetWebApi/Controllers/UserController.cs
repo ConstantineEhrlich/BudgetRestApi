@@ -84,7 +84,7 @@ public class UserController : ControllerBase
                 {
                     HttpOnly = true,
                     Secure = true,
-                    SameSite = SameSiteMode.None,
+                    SameSite = SameSiteMode.Lax,
                     Expires = DateTime.UtcNow.AddDays(LOGIN_EXPIRATION_DAYS),
                 };
                 Response.Cookies.Append("access_token", jwtToken, cookie);
@@ -116,7 +116,7 @@ public class UserController : ControllerBase
         {
             HttpOnly = true,
             Secure = true,
-            SameSite = SameSiteMode.None,
+            SameSite = SameSiteMode.Lax,
         };
         Response.Cookies.Delete("access_token", cookie);
         return Ok("Good bye!");

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: budgetapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: budgetapi
+  template:
+    metadata:
+      labels:
+        app: budgetapi
+    spec:
+      containers:
+        - name: budgetapi
+          image: registry.digitalocean.com/budgetapp-registry/budgetapi:latest
+          imagePullPolicy: Always
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: budgetapi-secret
+                  key: jwt
+            - name: POSTGRES_SERVER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+    

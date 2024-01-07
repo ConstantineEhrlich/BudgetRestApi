@@ -38,12 +38,13 @@ public class TransactionService
         User author = _userService.GetUser(requestingUserId);
         User owner = ownerId is null ? author : _userService.GetUser(ownerId);
         Category cat = _categoryService.GetCategory(budgetFileId, categoryId, requestingUserId);
-        DateTime entryDate = date ?? DateTime.Now;
+        
+        DateTime entryDate = date ?? DateTime.UtcNow;
         
         Transaction t = new(budgetFile, author, type, cat, description ?? string.Empty, amount)
         {
             OwnerId = owner.Id,
-            Date = date ?? entryDate,
+            Date = entryDate,
             Year = year ?? entryDate.Year,
             Period = period ?? entryDate.Month
         };

@@ -1,9 +1,8 @@
 # Budget REST API
 
-Budget REST API is a budget management system.
+Budget REST API is a budget management system. Using the application, the **Users** can record and maintain financial **Transactions**, which are stored in the **Budget Files** under a chosen **Category**.
 
-Using the application, the **Users** can recors and update financial **Transactions**, which are stored in the **Budget Files** under a chosen **Category**.
-
+### Key features
 - The application is written on C# and leverages ASP.Net for web-server and Entity Framework for database interactions.
 - The application and database are configured for containerized deployment on Kubernetes cluster.
 - The API provides an authentication mechanism based on a JWT token, which may be transferred directly or in the cookie (for safe authentication in a web context).   

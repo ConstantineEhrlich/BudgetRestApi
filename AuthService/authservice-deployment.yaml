@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authservice
+  template:
+    metadata:
+      labels:
+        app: authservice
+    spec:
+      containers:
+        - name: authservice
+          image: registry.digitalocean.com/budgetapp-registry/authservice:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt
+                  key: token
+            - name: MONGO_SERVER
+              value: authdb
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: authdb
+                  key: password
+    

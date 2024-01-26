@@ -95,7 +95,8 @@ public class UserService
 
     public string GenerateJwtKey(User user, uint daysUntilExpiration)
     {
-        string jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? "ThisIsAVerySecretKeyThatImUsingHere";
+        string jwtKey = Environment.GetEnvironmentVariable("JWT_KEY")
+                        ?? throw new KeyNotFoundException("Set environment variable JWT_KEY!");
         byte[] byteJwtKey = Encoding.ASCII.GetBytes(jwtKey);
         JwtSecurityTokenHandler tokenHandler = new();
         SecurityTokenDescriptor descriptor = new()

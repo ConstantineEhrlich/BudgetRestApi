@@ -49,7 +49,7 @@ public class BudgetFileService
         return b;
     }
 
-    public BudgetFile GetBudgetFile(string id, string? requestingUserId = null)
+    public BudgetFile GetBudgetFile(string id, string? requestingUserId)
     {
         BudgetFile? b = _context.Budgets?.Include(budgetFile => budgetFile.Owners).FirstOrDefault(bd => bd.Id == id);
         if (b is null)

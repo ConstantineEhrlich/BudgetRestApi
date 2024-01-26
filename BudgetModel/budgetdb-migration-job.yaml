@@ -1,21 +1,21 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: postgres-migrate-job
+  name: budgetdb-migration-job
 spec:
   template:
     spec:
       containers:
-        - name: database-migrate-job
+        - name: budgetdb-migration-job
           image: registry.digitalocean.com/budgetapp-registry/budget-migration:latest
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           env:
             - name: POSTGRES_SERVER
-              value: postgres
+              value: budgetdb
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
+                  name: budgetdb
                   key: password
           command: ["dotnet", "ef", "database", "update"]
       restartPolicy: OnFailure

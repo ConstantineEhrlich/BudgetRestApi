@@ -1,21 +1,21 @@
-FROM --platform=linux/amd64 mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 
-# Copy everything
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
 COPY BudgetWebApi/* BudgetWebApi/
 COPY BudgetServices/* BudgetServices/
 COPY BudgetModel/* BudgetModel/
 
-# Restore nuget packages before the build
 RUN dotnet restore ./BudgetWebApi/BudgetWebApi.csproj
+RUN dotnet build ./BudgetWebApi/BudgetWebApi.csproj
 
-# Build and publish executable
+FROM build AS publish
 RUN dotnet publish ./BudgetWebApi/BudgetWebApi.csproj -c Release -o ./Bin
 
-# Build runtime image
-FROM mcr.microsoft.com/dotnet/sdk:6.0
+FROM base AS final
 
 WORKDIR /app
-COPY --from=build-env /app/Bin .
+COPY --from=publish /src/Bin .
 ENV ASPNETCORE_URLS=http://+:5000
-ENTRYPOINT ["/app/BudgetWebApi"]
+ENTRYPOINT ["dotnet", "BudgetWebApi.dll"]

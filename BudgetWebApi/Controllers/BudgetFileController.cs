@@ -183,7 +183,7 @@ public class BudgetFileController : ControllerBase
         }
         try
         {
-            var b = _budgetFileService.GetBudgetFile(budgetId);
+            var b = _budgetFileService.GetBudgetFile(budgetId, requestingUser);
             b.Description = payload.Description;
             b.IsPrivate = payload.IsPrivate ?? b.IsPrivate;
             _budgetFileService.UpdateBudgetFile(budgetId, requestingUser, b);

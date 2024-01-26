@@ -15,18 +15,18 @@ spec:
       containers:
         - name: budgetapi
           image: registry.digitalocean.com/budgetapp-registry/budgetapi:latest
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           env:
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
-                  name: budgetapi-secret
-                  key: jwt
+                  name: jwt
+                  key: token
             - name: POSTGRES_SERVER
-              value: postgres
+              value: budgetdb
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
+                  name: budgetdb
                   key: password
     

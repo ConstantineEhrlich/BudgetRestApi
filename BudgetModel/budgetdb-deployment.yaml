@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
+  name: budgetdb
 spec:
   selector:
     matchLabels:
-      app: postgres
+      app: budgetdb
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: postgres
+        app: budgetdb
     spec:
       containers:
-        - name: postgres
-          image: postgres:latest
+        - name: budgetdb
+          image: postgres
           env:
             - name: POSTGRES_DB
               value: budget
@@ -24,14 +24,14 @@ spec:
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
+                  name: budgetdb
                   key: password
           ports:
             - containerPort: 5432
           volumeMounts:
             - mountPath: /var/lib/postgresql
-              name: postgres-storage
+              name: budgetdb-storage
       volumes:
-        - name: postgres-storage
+        - name: budgetdb-storage
           persistentVolumeClaim:
             claimName: postgres-claim

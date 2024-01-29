@@ -12,9 +12,6 @@ public class UsersDatabase
     {
         _settings = usersDbSettings;
         _client = new MongoClient(_settings.Value.ConnectionUrl);
-        // Define unique index for the User type 
-        IndexKeysDefinition<User> indexKeys = Builders<User>.IndexKeys.Ascending(user => user.Login);
-        Users.Indexes.CreateOne(new CreateIndexModel<User>(indexKeys, new(){Unique = true}));
 
     }
     

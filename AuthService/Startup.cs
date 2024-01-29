@@ -20,11 +20,14 @@ public class Startup
         services.Configure<Models.UsersDatabaseSettings>(Configuration.GetSection("UsersDatabase"));
         services.AddSingleton<Models.UsersDatabase>();
         services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
+        services.AddScoped<Services.UserService>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        
+        app.UseCors("BasicCors");
+        app.UseRouting();
+        app.UseEndpoints(endpoints => endpoints.MapControllers());
     }
 
     private static void CorsPolicies(CorsOptions options)

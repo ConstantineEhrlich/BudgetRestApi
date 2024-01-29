@@ -7,12 +7,12 @@ namespace AuthService.Services;
 
 public class UserService
 {
-    private readonly IPasswordHasher<User> _hashser;
+    private readonly IPasswordHasher<User> _hasher;
     private readonly UsersDatabase _database;
 
     public UserService(IPasswordHasher<User> hasher, UsersDatabase database)
     {
-        _hashser = hasher;
+        _hasher = hasher;
         _database = database;
     }
     
@@ -23,7 +23,7 @@ public class UserService
             Login = signUpData.Login,
             Email = signUpData.Email,
         };
-        u.PasswordHash = _hashser.HashPassword(u, signUpData.Password);
+        u.PasswordHash = _hasher.HashPassword(u, signUpData.Password);
         
         try
         {
@@ -48,42 +48,55 @@ public class UserService
 
     public async Task<User> GetUser(string login)
     {
-        return await _database.Users.Find(FilterByLogin(login)).FirstOrDefaultAsync();
+        User u = await _database.Users.Find(FilterByLogin(login)).FirstOrDefaultAsync();
+		if (u is null)
+			throw new UserServiceException($"User {login} does not exists!");
+        return u;
     }
     
-    public async Task FailedLogin(string userLogin)
+    public async Task FailedLogin(User u)
     {
-        
+		u.LastSuccessLogin = null;
+		u.LastFailedLogin = DateTime.UtcNow;
+		u.FailedLoginCount++;
+		await _database.Users.ReplaceOneAsync(FilterByLogin(u.Login), u);
     }
 
-    public async Task SuccessLogin(string userLogin)
+    public async Task SuccessLogin(User u)
     {
-        throw new NotImplementedException();
+		u.LastSuccessLogin = DateTime.UtcNow;
+		u.FailedLoginCount = 0;
+		u.LastFailedLogin = null;
+		await _database.Users.ReplaceOneAsync(FilterByLogin(u.Login), u);
     }
 
-    public async Task<bool> VerifyPassword(string userLogin, string password)
+    public async Task<bool> VerifyPassword(User u, string password)
     {
-        User u = await GetUser(userLogin);
-        switch (_hashser.VerifyHashedPassword(u, u.PasswordHash, password))
+        switch (_hasher.VerifyHashedPassword(u, u.PasswordHash, password))
         {
             case PasswordVerificationResult.Failed:
-                await FailedLogin(userLogin);
                 return false;
             case PasswordVerificationResult.Success:
-                await SuccessLogin(userLogin);
                 return true;
             case PasswordVerificationResult.SuccessRehashNeeded:
-                await RehashPassword(userLogin, password);
-                await SuccessLogin(userLogin);
+                await RehashPassword(u.Login, password);
                 return true;
             default:
                 return false;
         }
     }
 
-    public Task UpdatePassword(string UserLogin, string oldPassword, string newPassword)
+    public async Task UpdatePassword(User u, string oldPassword, string newPassword)
     {
-        throw new NotImplementedException();
+        if (await VerifyPassword(u, oldPassword))
+		{
+			u.PasswordHash = _hasher.HashPassword(u, newPassword);
+			await _database.Users.ReplaceOneAsync(FilterByLogin(u.Login), u);
+		}
+		else
+		{
+			throw new UserServiceException($"Incorrect password");
+		}
     }
     
     private FilterDefinition<User> FilterByLogin(string login)
@@ -94,7 +107,7 @@ public class UserService
     private async Task RehashPassword(string login, string password)
     {
         User u = await GetUser(login);
-        string rehash = _hashser.HashPassword(u, password);
+        string rehash = _hasher.HashPassword(u, password);
         await _database.Users.UpdateOneAsync(FilterByLogin(u.Login),
             Builders<User>.Update.Set(nameof(User.PasswordHash), rehash));
     }

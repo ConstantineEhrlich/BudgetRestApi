@@ -41,12 +41,6 @@ public class Startup
         
         services.AddControllers();
         
-        // Services to support Swagger
-        services.AddEndpointsApiExplorer();
-        
-        
-        
-        
         // Data access services
         services.AddScoped<UserService>();
         services.AddScoped<BudgetFileService>();

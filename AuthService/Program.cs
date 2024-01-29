@@ -1,18 +1,20 @@
-var builder = WebApplication.CreateBuilder(args);
+namespace AuthService;
 
-// Add services to the container.
+public static class Program
+{
+    public static void Main(string[] args)
+    {
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+        
+        builder.Configuration["JWT_KEY"] = System.Environment.GetEnvironmentVariable("JWT_KEY")
+            ?? throw new KeyNotFoundException("JWT_KEY variable not set");
+        
+        Startup startup = new(builder.Configuration);
+        startup.ConfigureServices(builder.Services);
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-
-var app = builder.Build();
-
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+        WebApplication app = builder.Build();
+        startup.Configure(app, app.Environment);
+        
+        app.Run();
+    }
+}

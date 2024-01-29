@@ -20,7 +20,7 @@ public class UserService
         _passwordHasher = passwordHasher;
     }
 
-    public User CreateUser(string id, string name, string password, string email = "")
+    public User CreateUser(string id, string name, string password, string email)
     {
         if (string.IsNullOrEmpty(id))
             throw new ArgumentException("Id can't be empty");

@@ -8,7 +8,6 @@
       "applicationUrl": "http://+:5232",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "MONGO_SERVER": "localhost",
         "MONGO_PASSWORD": "password"
       }
     }

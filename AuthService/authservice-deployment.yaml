@@ -22,8 +22,6 @@ spec:
                 secretKeyRef:
                   name: jwt
                   key: token
-            - name: MONGO_SERVER
-              value: authdb
             - name: MONGO_PASSWORD
               valueFrom:
                 secretKeyRef:

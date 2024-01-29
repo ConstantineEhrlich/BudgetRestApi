@@ -5,11 +5,10 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,
-      "applicationUrl": "http://localhost:5232",
+      "applicationUrl": "http://+:5232",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "MONGO_PASSWORD": "password",
-        "JWT_KEY":  "asdfasdfasdfasdfasdfasdfdasfasdf"
+        "MONGO_PASSWORD": "password"
       }
     }
   }

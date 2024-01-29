@@ -1,17 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.33829.163
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetModel", "BudgetModel\BudgetModel.csproj", "{9065DB0A-8FF4-4149-9BCC-663A67FCABAF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetModel", "BudgetModel\BudgetModel.csproj", "{9065DB0A-8FF4-4149-9BCC-663A67FCABAF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{D3311E45-6718-4903-8690-38A8008A5E61}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{D3311E45-6718-4903-8690-38A8008A5E61}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetWebApi", "BudgetWebApi\BudgetWebApi.csproj", "{E1634B59-8F7D-4C32-AAB2-617C9E27B73C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetWebApi", "BudgetWebApi\BudgetWebApi.csproj", "{E1634B59-8F7D-4C32-AAB2-617C9E27B73C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetServices", "BudgetServices\BudgetServices.csproj", "{2F9B3C41-A5E8-4F81-9D12-9B5ACF5BE754}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetServices", "BudgetServices\BudgetServices.csproj", "{2F9B3C41-A5E8-4F81-9D12-9B5ACF5BE754}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthService", "AuthService\AuthService.csproj", "{D3A6DD85-A8E9-434C-AF2F-52AF9003E592}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthService", "AuthService\AuthService.csproj", "{D3A6DD85-A8E9-434C-AF2F-52AF9003E592}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,11 +36,5 @@ Global
 		{D3A6DD85-A8E9-434C-AF2F-52AF9003E592}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3A6DD85-A8E9-434C-AF2F-52AF9003E592}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3A6DD85-A8E9-434C-AF2F-52AF9003E592}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7ECB123C-D28B-4280-BE20-D03F4CE84910}
 	EndGlobalSection
 EndGlobal

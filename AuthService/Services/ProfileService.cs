@@ -18,27 +18,13 @@ public class ProfileService
         _users = users;
     }
 
-    public async Task<Profile> CreateProfile(SignUp signUpData)
-    {
-        Profile p = new Profile()
-        {
-            Login = signUpData.Login,
-            FullName = signUpData.Name,
-            PublicEmail = signUpData.Email,
-        };
-
-        await _database.Profiles.InsertOneAsync(p);
-        return p;
-    }
-    
     public async Task<Profile> GetProfile(string login)
     {
         User u = await _users.GetUser(login);
         Profile p = await _database.Profiles.Find(Builders<Profile>.Filter.Eq(nameof(Profile.Id), u.ProfileId)).FirstOrDefaultAsync();
         return p;
     }
-
-
+    
     public async Task UpdateProfile(Profile profile)
     {
         Profile target = await GetProfile(profile.Login);

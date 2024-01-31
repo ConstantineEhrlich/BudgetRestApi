@@ -26,6 +26,7 @@ public class Startup
         services.Configure<Services.UsersDatabaseSettings>(Configuration.GetSection("UsersDatabase"));
         services.AddSingleton<Services.UsersDatabase>();
         services.AddScoped<Services.UserService>();
+        services.AddScoped<Services.ProfileService>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

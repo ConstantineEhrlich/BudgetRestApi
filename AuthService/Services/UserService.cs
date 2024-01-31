@@ -10,12 +10,14 @@ public class UserService
     private readonly IPasswordHasher<User> _hasher;
     private readonly UsersDatabase _database;
     private readonly ILogger<UserService> _logger;
+    private readonly ProfileService _profiles;
 
-    public UserService(IPasswordHasher<User> hasher, UsersDatabase database, ILogger<UserService> logger)
+    public UserService(IPasswordHasher<User> hasher, UsersDatabase database, ProfileService profiles, ILogger<UserService> logger)
     {
         _hasher = hasher;
         _database = database;
         _logger = logger;
+        _profiles = profiles;
     }
     
     public async Task CreateUser(SignUp signUpData)
@@ -33,17 +35,10 @@ public class UserService
         }
         catch (MongoWriteException e) // Occurs when the login is not unique
         {
-            throw new UserServiceException($"User {signUpData.Login} already exists!");
+            throw new AuthServiceException($"User {signUpData.Login} already exists!");
         }
 
-        Profile p = new Profile()
-        {
-            Login = signUpData.Login,
-            FullName = signUpData.Name,
-            PublicEmail = signUpData.Email,
-        };
-
-        await _database.Profiles.InsertOneAsync(p);
+        Profile p = await _profiles.CreateProfile(signUpData);
         await _database.Users.UpdateOneAsync(FilterByLogin(signUpData.Login),
             Builders<User>.Update.Set(nameof(User.ProfileId), p.Id));
     }
@@ -52,7 +47,7 @@ public class UserService
     {
         User u = await _database.Users.Find(FilterByLogin(login)).FirstOrDefaultAsync();
 		if (u is null)
-			throw new UserServiceException($"User {login} does not exists!");
+			throw new AuthServiceException($"User {login} does not exists!");
         return u;
     }
     
@@ -97,7 +92,7 @@ public class UserService
 		}
 		else
 		{
-			throw new UserServiceException($"Incorrect password");
+			throw new AuthServiceException($"Incorrect password");
 		}
     }
     

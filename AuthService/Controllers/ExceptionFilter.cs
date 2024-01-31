@@ -22,7 +22,7 @@ public class ExceptionFilter: IActionFilter, IOrderedFilter
 
     public void OnActionExecuted(ActionExecutedContext context)
     {
-        if (context.Exception is UserServiceException exc)
+        if (context.Exception is AuthServiceException exc)
         {
             context.Result = new BadRequestObjectResult(new {exc.Message});
             context.ExceptionHandled = true;

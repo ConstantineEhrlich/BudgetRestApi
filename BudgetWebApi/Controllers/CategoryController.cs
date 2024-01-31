@@ -46,6 +46,7 @@ public class CategoryController : ControllerBase
     public IActionResult GetAll(string budgetId)
     {
         string requestingUser = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+        string user = User.Identity.Name;
         try
         {
             return Ok(_categoryService.GetAllCategories(budgetId, requestingUser).Select(c => new Dto.CategoryDto(c)));

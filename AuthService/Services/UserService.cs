@@ -9,11 +9,13 @@ public class UserService
 {
     private readonly IPasswordHasher<User> _hasher;
     private readonly UsersDatabase _database;
+    private readonly ILogger<UserService> _logger;
 
-    public UserService(IPasswordHasher<User> hasher, UsersDatabase database)
+    public UserService(IPasswordHasher<User> hasher, UsersDatabase database, ILogger<UserService> logger)
     {
         _hasher = hasher;
         _database = database;
+        _logger = logger;
     }
     
     public async Task CreateUser(SignUp signUpData)
@@ -70,7 +72,7 @@ public class UserService
 		await _database.Users.ReplaceOneAsync(FilterByLogin(u.Login), u);
     }
 
-    public async Task<bool> VerifyPassword(User u, string password)
+    public async Task<bool> PasswordIsCorrect(User u, string password)
     {
         switch (_hasher.VerifyHashedPassword(u, u.PasswordHash, password))
         {
@@ -88,7 +90,7 @@ public class UserService
 
     public async Task UpdatePassword(User u, string oldPassword, string newPassword)
     {
-        if (await VerifyPassword(u, oldPassword))
+        if (await PasswordIsCorrect(u, oldPassword))
 		{
 			u.PasswordHash = _hasher.HashPassword(u, newPassword);
 			await _database.Users.ReplaceOneAsync(FilterByLogin(u.Login), u);

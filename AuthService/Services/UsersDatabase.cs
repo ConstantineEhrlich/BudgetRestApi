@@ -1,7 +1,8 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using AuthService.Models;
 
-namespace AuthService.Models;
+namespace AuthService.Services;
 
 public class UsersDatabase
 {

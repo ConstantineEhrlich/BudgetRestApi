@@ -8,7 +8,8 @@
       "applicationUrl": "http://+:5232",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "MONGO_PASSWORD": "password"
+        "MONGO_PASSWORD": "MongoDbPassword",
+        "JWT_KEY": "asdfasdfasdfasdfasdfasdfasfasfdasdfasdfasdfasdf"
       }
     }
   }

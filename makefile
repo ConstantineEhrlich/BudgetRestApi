@@ -17,8 +17,6 @@ minikube-images:
     docker build -f ./migration.dockerfile -t $(REGISTRY)budget-migration .
 	@eval $$(minikube docker-env) && \
    	docker build -f ./budgetapi.dockerfile -t $(REGISTRY)budgetapi .
-	@eval $$(minikube docker-env) && \
-   	docker build -f./authservice.dockerfile -t$(REGISTRY)authservice .
 
 
 remote-images:
@@ -27,15 +25,6 @@ remote-images:
 
 
 deploy:
-	# Deploy auth database
-	kubectl apply -f ./AuthService/mongo-claim.yaml
-	kubectl apply -f ./AuthService/authdb-deployment.yaml
-	kubectl apply -f ./AuthService/authdb-service.yaml
-	
-	# Deploy auth service
-	kubectl apply -f ./AuthService/authservice-deployment.yaml
-	kubectl apply -f ./AuthService/authservice-service.yaml
-	
 	# Deploy budgetapi database
 	kubectl apply -f ./BudgetModel/postgres-claim.yaml
 	kubectl apply -f ./BudgetModel/budgetdb-deployment.yaml

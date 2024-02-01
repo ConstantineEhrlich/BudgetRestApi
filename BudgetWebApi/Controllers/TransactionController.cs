@@ -49,7 +49,8 @@ public class TransactionController : ControllerBase
     [Route("{budgetId}/transactions/add")]
     public IActionResult Add([FromBody] Dto.TransactionAdd payload, string budgetId)
     {
-        string requestingUser = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+        //string requestingUser = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+        string requestingUser = User.Identity!.Name!;
         try
         {
             _updateManager.BroadcastUpdate(budgetId);
@@ -58,11 +59,11 @@ public class TransactionController : ControllerBase
                                                                                   payload.CategoryId,
                                                                                   payload.Amount,
                                                                                   payload.Description,
-                                                                                  (TransactionType)payload.TransactionType,
-                                                                                  payload.OwnerId,
-                                                                                  payload.Date,
-                                                                                  payload.Year,
-                                                                                  payload.Period)));
+                                                                                  (TransactionType?)payload.TransactionType ?? TransactionType.Expense,
+                                                                                  payload.OwnerId ?? requestingUser,
+                                                                                  payload.Date ?? DateTime.UtcNow,
+                                                                                  payload.Year ?? DateTime.UtcNow.Year,
+                                                                                  payload.Period ?? DateTime.UtcNow.Month)));
         }
         catch (ArgumentException e)
         {

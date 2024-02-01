@@ -20,7 +20,7 @@ public class UserService
         _passwordHasher = passwordHasher;
     }
 
-    public User CreateUser(string id, string name, string password, string email)
+    public User CreateUser(string id, string name, string email)
     {
         if (string.IsNullOrEmpty(id))
             throw new ArgumentException("Id can't be empty");
@@ -31,46 +31,12 @@ public class UserService
         if (_context.Users!.FirstOrDefault(u => u.Id == id) is not null)
             throw new ArgumentException("User already exists!");
 
-        User u = new User(id, name)
-        {
-            Email = email,
-        };
-        u.PasswordHash = _passwordHasher.HashPassword(u, password);
+        User u = new User(id, name, email);
         _context.Add(u);
         _context.SaveChanges();
         return u;
     }
 
-    public void FailedLogin(User u)
-    {
-        u.FailedLoginCount++;
-        u.LastFailedLogin = DateTime.UtcNow;
-        _context.SaveChanges();
-    }
-
-    public void SuccessLogin(User u)
-    {
-        u.FailedLoginCount = 0;
-        u.LastFailedLogin = null;
-        _context.SaveChanges();
-    }
-    public bool VerifyPassword(User user, string password)
-    {
-        return _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password)
-                == PasswordVerificationResult.Success;
-    }
-
-    public bool UpdatePassword(User user, string oldPassword, string newPassword)
-    {
-        if (VerifyPassword(user, oldPassword))
-        {
-            user.PasswordHash = _passwordHasher.HashPassword(user, newPassword);
-            return true;
-        }
-        
-        return false;
-    }
-    
     public User GetUser(string id)
     {
         if (string.IsNullOrEmpty(id))
@@ -93,23 +59,4 @@ public class UserService
         return target;
     }
 
-    public string GenerateJwtKey(User user, uint daysUntilExpiration)
-    {
-        string jwtKey = Environment.GetEnvironmentVariable("JWT_KEY")
-                        ?? throw new KeyNotFoundException("Set environment variable JWT_KEY!");
-        byte[] byteJwtKey = Encoding.ASCII.GetBytes(jwtKey);
-        JwtSecurityTokenHandler tokenHandler = new();
-        SecurityTokenDescriptor descriptor = new()
-        {
-            Subject = new ClaimsIdentity(new []
-            {
-                new Claim(ClaimTypes.Name, user.Id),
-            }),
-            Expires = DateTime.UtcNow.AddDays(daysUntilExpiration),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(byteJwtKey), SecurityAlgorithms.HmacSha256Signature)
-        };
-        SecurityToken token = tokenHandler.CreateToken(descriptor);
-        return tokenHandler.WriteToken(token);
-
-    }
 }

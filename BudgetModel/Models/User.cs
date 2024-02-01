@@ -8,12 +8,6 @@ public class User
     public string Name { get; set; }
     public string Email { get; set; } = string.Empty;
 
-    [JsonIgnore] public int FailedLoginCount { get; set; } = 0;
-    [JsonIgnore] public DateTime? LastFailedLogin { get; set; } = null;
-    
-    [JsonIgnore]
-    public string PasswordHash { get; set; } = string.Empty;
-
     [JsonIgnore]
     public virtual ICollection<Transaction>? AuthoredTransactions { get; set; }
     

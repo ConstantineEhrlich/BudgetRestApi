@@ -12,7 +12,7 @@ public static class SocketListener
             WebSocketReceiveResult incoming = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
             if (incoming.MessageType == WebSocketMessageType.Close)
             {
-                webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Disconnected", CancellationToken.None);
+                await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Disconnected", CancellationToken.None);
             }
             
         }

@@ -25,7 +25,7 @@ public class BudgetUpdateManager: IUpdateManager
 
     public async void BroadcastUpdate(string budgetId)
     {
-        if (_sockets.TryGetValue(budgetId, out List<WebSocket> clients))
+        if (_sockets.TryGetValue(budgetId, out List<WebSocket>? clients))
         {
             clients.Where(client => client.State == WebSocketState.Open).ToList().ForEach(async s =>
             {

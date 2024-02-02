@@ -10,7 +10,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "JWT_KEY": "ThisKeyHaveToBeExtremelySecureToWork",
         "POSTGRES_SERVER": "localhost",
-        "POSTGRES_PASSWORD": "PostgresPassword"
+        "POSTGRES_PASSWORD": "PostgresPassword",
+        "RABBITMQ_PASSWORD": "cJKdsolFHKBNwbev"
       }
     }
   }

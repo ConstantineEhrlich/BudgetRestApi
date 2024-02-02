@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 using BudgetWebApi.Sockets;
+using BudgetWebApi.UserUpdateConsumer;
 
 namespace BudgetWebApi;
 
@@ -50,7 +51,12 @@ public class Startup
             options.UseNpgsql(BudgetModel.Context.GetPostgresConnectionString()));
             // options.UseSqlite(### Connection string)
         
+        // User creation notification consumer
+        services.Configure<UpdateConsumerSettings>(Configuration.GetSection("UpdateConsumer"));
+        services.AddHostedService<UpdateConsumer>();
         
+            
+            
         // Read JWT key from the config
         string jwtKey = Configuration["JWT_KEY"];
         byte[] byteKey = Encoding.ASCII.GetBytes(jwtKey);

@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
       <ProjectReference Include="..\BudgetModel\BudgetModel.csproj" />
       <ProjectReference Include="..\BudgetServices\BudgetServices.csproj" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.21" />

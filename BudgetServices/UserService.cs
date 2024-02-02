@@ -20,7 +20,7 @@ public class UserService
         _passwordHasher = passwordHasher;
     }
 
-    public User CreateUser(string id, string name, string email)
+    public async Task CreateUserAsync(string id, string name, string email)
     {
         if (string.IsNullOrEmpty(id))
             throw new ArgumentException("Id can't be empty");
@@ -32,9 +32,8 @@ public class UserService
             throw new ArgumentException("User already exists!");
 
         User u = new User(id, name, email);
-        _context.Add(u);
-        _context.SaveChanges();
-        return u;
+        await _context.AddAsync(u);
+        await _context.SaveChangesAsync();
     }
 
     public User GetUser(string id)

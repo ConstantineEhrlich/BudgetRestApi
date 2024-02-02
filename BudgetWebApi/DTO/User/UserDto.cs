@@ -14,4 +14,9 @@ public class UserDto
         Name = u.Name;
         Email = u.Email;
     }
+
+    public UserDto()
+    {
+        
+    }
 }

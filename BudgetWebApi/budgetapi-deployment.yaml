@@ -29,4 +29,9 @@ spec:
                 secretKeyRef:
                   name: budgetdb
                   key: password
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+               secretKeyRef:
+                 name: rabbitmq
+                 key: rabbitmq-password
     

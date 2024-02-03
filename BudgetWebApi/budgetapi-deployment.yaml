@@ -15,7 +15,7 @@ spec:
       containers:
         - name: budgetapi
           image: registry.digitalocean.com/budgetapp-registry/budgetapi:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           env:
             - name: JWT_KEY
               valueFrom:

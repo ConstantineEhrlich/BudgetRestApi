@@ -8,7 +8,7 @@ spec:
       containers:
         - name: budgetdb-migration-job
           image: registry.digitalocean.com/budgetapp-registry/budget-migration:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           env:
             - name: POSTGRES_SERVER
               value: budgetdb

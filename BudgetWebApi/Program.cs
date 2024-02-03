@@ -13,5 +13,6 @@ public static class Program
         startup.Configure(app, app.Environment);
         
         app.Run();
+        ;
     }
 }

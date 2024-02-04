@@ -40,7 +40,7 @@ public class Startup
         
 
         
-        services.AddControllers();
+        services.AddControllers(opts => opts.Filters.Add<Controllers.ExceptionFilter>());
         
         // Data access services
         services.AddScoped<UserService>();

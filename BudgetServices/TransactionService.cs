@@ -81,7 +81,7 @@ public class TransactionService
     }
 
     public List<Transaction> GetAllTransactions(string budgetId,
-                                   string requestingUserId,
+                                   string? requestingUserId,
                                    int? forYear = null,
                                    int? forPeriod = null,
                                    string? byCategory = null,
@@ -89,7 +89,7 @@ public class TransactionService
     {
         BudgetFile b = _budgetService.GetBudgetFile(budgetId, requestingUserId);
         if(b.IsPrivate)
-            _budgetService.ThrowIfNotOwner(requestingUserId, budgetId);
+            _budgetService.ThrowIfNotOwner(requestingUserId ?? string.Empty, budgetId);
 
         IEnumerable<Transaction> trns = _context.Transactions!
             .Where(t => t.BudgetFileId == budgetId);

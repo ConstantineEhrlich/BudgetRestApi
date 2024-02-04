@@ -58,9 +58,9 @@ public class TransactionService
         Transaction? t = _context.Transactions!.Include(transaction => transaction.BudgetFile)
             .FirstOrDefault(tr => tr.Id == id);
         if(t is null)                
-            throw new ArgumentException($"Transaction {id} not found!");
+            throw new BudgetServiceException($"Transaction {id} not found!");
     
-        if (t.BudgetFile.IsPrivate)
+        if (t.BudgetFile?.IsPrivate ?? false)
             _budgetService.ThrowIfNotOwner(requestingUserId, t.BudgetFileId);
         
         return t;

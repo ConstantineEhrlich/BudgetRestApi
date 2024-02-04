@@ -33,7 +33,7 @@ public class BudgetFileService
         BudgetFile b = GetBudgetFile(budgetId, requestingUserId);
         User newOwner = _userService.GetUser(newOwnerId);
         if (b.Owners.Contains(newOwner))
-            throw new ArgumentException($"{newOwnerId} is already owner of the budget!", nameof(newOwnerId));
+            throw new BudgetServiceException($"{newOwnerId} is already listed as owner");
         
         b.Owners.Add(newOwner);
         _context.SaveChanges();
@@ -53,16 +53,16 @@ public class BudgetFileService
     {
         BudgetFile? b = _context.Budgets?.Include(budgetFile => budgetFile.Owners).FirstOrDefault(bd => bd.Id == id);
         if (b is null)
-            throw new ArgumentException($"Budget not found", nameof(id));
+            throw new BudgetServiceException($"Budget not found");
 
         if (b.IsDeleted)
-            throw new ArgumentException($"Budget is deleted", nameof(id));
+            throw new BudgetServiceException($"Budget is deleted");
         
         if (b.IsPrivate && requestingUserId is null)
-            throw new ArgumentException($"The budget is private and the user is not specified", nameof(requestingUserId));
+            throw new BudgetServiceException($"The budget is private");
         
         if(b.IsPrivate && !IsOwner(requestingUserId!, id))
-                throw new ArgumentException($"The budget is not owned by {requestingUserId}", nameof(requestingUserId));
+            throw new BudgetServiceException($"The budget is not owned by {requestingUserId}");
 
         return b;
     }
@@ -71,8 +71,11 @@ public class BudgetFileService
     {
         BudgetFile target = GetBudgetFile(id, requestingUserId);
         if (!IsOwner(requestingUserId, id))
-            throw new ArgumentException($"User {requestingUserId} is not allowed to change budget {id}", nameof(requestingUserId));
+            throw new BudgetServiceException($"User {requestingUserId} is not allowed to change budget {id}");
 
+        if (target.Id != b.Id)
+            throw new BudgetServiceException($"Can't update Budget {id} with the Budget {b.Id}");
+        
         target.Description = b.Description;
         target.IsPrivate = b.IsPrivate;
         _context.SaveChanges();
@@ -83,7 +86,7 @@ public class BudgetFileService
     {
         BudgetFile target = GetBudgetFile(id, requestingUserId);
         if (!IsOwner(requestingUserId, id))
-            throw new ArgumentException($"User {requestingUserId} is not allowed to delete budget {id}", nameof(requestingUserId));
+            throw new BudgetServiceException($"User {requestingUserId} is not allowed to delete budget {id}");
 
         target.IsDeleted = true;
         _context.SaveChanges();
@@ -127,9 +130,6 @@ public class BudgetFileService
     public void ThrowIfNotOwner(string userId, string budgetId)
     {
         if (!this.IsOwner(userId, budgetId))
-        {
-            throw new ArgumentException($"User {userId} is not allowed on budget {budgetId}",
-                nameof(userId));
-        }
+            throw new BudgetServiceException($"User {userId} is not allowed on budget {budgetId}");
     }
 }

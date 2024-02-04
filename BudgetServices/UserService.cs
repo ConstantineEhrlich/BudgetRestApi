@@ -1,11 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
-using BudgetModel;
+﻿using BudgetModel;
 using BudgetModel.Models;
-
-using Microsoft.IdentityModel.Tokens;
 
 namespace BudgetServices;
 
@@ -50,9 +44,8 @@ public class UserService
     {
         User target = GetUser(id);
         if (target.Id != user.Id)
-        {
-            throw new BudgetServiceException($"Error: attempt to update user {id} with the profile of user {user.Id}");
-        }
+            throw new BudgetServiceException($"Can't update user {id} with the profile of user {user.Id}");
+        
         target.Name = user.Name;
         target.Email = user.Email;
         

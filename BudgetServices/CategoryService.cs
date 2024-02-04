@@ -25,9 +25,9 @@ public class CategoryService
     public Category AddCategory(string budgetFileId, string categoryId, string requestingUserId, string? description = null, TransactionType defaultType = TransactionType.Expense)
     {
         _budgetService.ThrowIfNotOwner(requestingUserId, budgetFileId);
-        if (_context.Categories.Any(c => c.Id == categoryId && c.BudgetFileId == budgetFileId))
+        if (_context.Categories!.Any(c => c.Id == categoryId && c.BudgetFileId == budgetFileId))
         {
-            throw new ArgumentException("Category already exists!");
+            throw new BudgetServiceException("Category already exists!");
         }
         Category cat = new(budgetFileId, categoryId, description ?? string.Empty)
         {
@@ -43,7 +43,7 @@ public class CategoryService
     {
         _budgetService.ThrowIfNotOwner(requestingUserId, budgetFileId);
         return _context.Categories?.FirstOrDefault(c => c.Id == categoryId && c.BudgetFileId == budgetFileId)
-            ?? throw new ArgumentException($"Category not found", nameof(categoryId));
+            ?? throw new BudgetServiceException($"Category not found");
     }
 
     public Category UpdateCategory(string budgetFileId, string id, string requestingUserId, Category category)

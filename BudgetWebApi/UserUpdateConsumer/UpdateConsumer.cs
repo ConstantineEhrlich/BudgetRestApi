@@ -46,16 +46,14 @@ public class UpdateConsumer: BackgroundService
             UserDto? userInfo = JsonSerializer.Deserialize<UserDto>(message);
             await CreateUserAsync(userInfo!, ea.DeliveryTag);
         };
-        _channel.BasicConsume(queue: _name,
-            autoAck: false,
-            consumer: consumer);
+        _channel.BasicConsume(queue: _name, autoAck: false, consumer: consumer);
         await Task.Delay(Timeout.Infinite, stoppingToken);
     }
 
     private async Task CreateUserAsync(UserDto userInfo, ulong deliveryTag)
     {
         using IServiceScope scope = _provider.CreateScope();
-        var users = scope.ServiceProvider.GetRequiredService<UserService>();
+        UserService users = scope.ServiceProvider.GetRequiredService<UserService>();
         try
         {
             _logger.LogInformation("User created: {}", userInfo.Id);

@@ -14,8 +14,7 @@ jobs:
       - name: Checkout branch deploy
         uses: actions/checkout@v2
         with:
-          ref:
-            deploy
+          ref: deploy
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
@@ -30,4 +29,23 @@ jobs:
         run: docker push ${{ secrets.DO_REGISTRY_NAME }}/budget-migration:latest
       - name: Push budgetapi image
         run: docker push ${{ secrets.DO_REGISTRY_NAME }}/budgetapi:latest
-      
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch deploy
+        uses: actions/checkout@v2
+        with:
+          ref:
+            deploy
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_ACCESS_TOKEN }}
+      - name: Set context
+        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 do-ams3-cluster-budgetapp
+      - name: Configure deployment
+        run: kubectl apply -f $GITHUB_WORKSPACE/BudgetWebApi/budgetapi-deployment.yaml
+      - name: Configure service
+        run: kubectl apply -f $GITHUB_WORKSPACE/BudgetWebApi/budgetapi-service.yaml
+      - name: Restart deployment
+        run: kubectl rollout restart deployment/budgetapi

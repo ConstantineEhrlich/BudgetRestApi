@@ -12,24 +12,22 @@ namespace BudgetServices;
 public class UserService
 {
     private readonly Context _context;
-    private readonly IPasswordHasher<User> _passwordHasher;
 
-    public UserService(Context context, IPasswordHasher<User> passwordHasher)
+    public UserService(Context context)
     {
         _context = context;
-        _passwordHasher = passwordHasher;
     }
 
     public async Task CreateUserAsync(string id, string name, string email)
     {
         if (string.IsNullOrEmpty(id))
-            throw new ArgumentException("Id can't be empty");
+            throw new BudgetServiceException("Id can't be empty");
 
         if (string.IsNullOrEmpty(name))
-            throw new ArgumentException("Name can't be empty");
+            throw new BudgetServiceException("Name can't be empty");
 
         if (_context.Users!.FirstOrDefault(u => u.Id == id) is not null)
-            throw new ArgumentException("User already exists!");
+            throw new BudgetServiceException("User already exists!");
 
         User u = new User(id, name, email);
         await _context.AddAsync(u);
@@ -39,11 +37,11 @@ public class UserService
     public User GetUser(string id)
     {
         if (string.IsNullOrEmpty(id))
-            throw new ArgumentException("Id can't be empty", nameof(id));
+            throw new BudgetServiceException("Id can't be empty");
         
         User? u = _context.Users!.FirstOrDefault(usr => usr.Id == id);
         if (u is null)
-            throw new ArgumentException($"User {id} does not exist!");
+            throw new BudgetServiceException($"User {id} does not exist!");
 
         return u;
     }
@@ -51,6 +49,10 @@ public class UserService
     public User UpdateUser(string id, User user)
     {
         User target = GetUser(id);
+        if (target.Id != user.Id)
+        {
+            throw new BudgetServiceException($"Error: attempt to update user {id} with the profile of user {user.Id}");
+        }
         target.Name = user.Name;
         target.Email = user.Email;
         

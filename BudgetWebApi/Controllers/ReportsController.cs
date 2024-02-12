@@ -18,7 +18,7 @@ public class ReportsController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{budgetId}/SummaryByCategory")]
+    [Route("{budgetId}/[action]")]
     public IActionResult SummaryByCategory(string budgetId,
                                            [FromQuery, Range(1900, 2999)] int? year,
                                            [FromQuery, Range(1,12)] int? period)
@@ -27,7 +27,7 @@ public class ReportsController : ControllerBase
 
 
     [HttpGet]
-    [Route("{budgetId}/SummaryByOwner")]
+    [Route("{budgetId}/[action]")]
     public IActionResult SummaryByOwner(string budgetId,
                                         [FromQuery, Range(1900, 2999)] int? year,
                                         [FromQuery, Range(1, 12)] int? period)

@@ -4,20 +4,18 @@ namespace BudgetServices.Reports;
 
 public class ReportFactory: IReportFactory
 {
-    private readonly IServiceProvider _provider;
+    private readonly TransactionService _transactions;
 
-    public ReportFactory(IServiceProvider provider)
+    public ReportFactory(TransactionService transactionService)
     {
-        _provider = provider;
+        _transactions = transactionService;
     }
     
     public IReportBuilder CreateReport<T>(string budgetId, string? requestingUserId) where T : IReportBuilder, new()
     {
-        //TransactionService service = _provider.CreateScope().ServiceProvider.GetRequiredService<TransactionService>();
-        TransactionService service = _provider.GetRequiredService<TransactionService>();
         return new T()
         {
-            Transactions = service.GetAllTransactions(budgetId, requestingUserId)
+            Transactions = _transactions.GetAllTransactions(budgetId, requestingUserId)
         };
     }
 }

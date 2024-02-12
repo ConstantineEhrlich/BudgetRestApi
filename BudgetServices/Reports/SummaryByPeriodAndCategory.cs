@@ -1,5 +1,3 @@
-using BudgetModel;
-
 namespace BudgetServices.Reports;
 
 public class SummaryByPeriodAndCategory: ReportBuilder

@@ -80,32 +80,15 @@ public class TransactionService
         return target;
     }
 
-    public List<Transaction> GetAllTransactions(string budgetId,
-                                   string? requestingUserId,
-                                   int? forYear = null,
-                                   int? forPeriod = null,
-                                   string? byCategory = null,
-                                   string? byOwner = null)
+    public IQueryable<Transaction> GetAllTransactions(string budgetId, string? requestingUserId)
     {
         BudgetFile b = _budgetService.GetBudgetFile(budgetId, requestingUserId);
         if(b.IsPrivate)
             _budgetService.ThrowIfNotOwner(requestingUserId ?? string.Empty, budgetId);
 
-        IEnumerable<Transaction> trns = _context.Transactions!
+        IQueryable<Transaction> trns = _context.Transactions!
             .Where(t => t.BudgetFileId == budgetId);
 
-        if (forYear is not null)
-            trns = trns.Where(t => t.Year == forYear);
-
-        if (forPeriod is not null)
-            trns = trns.Where(t => t.Period == forPeriod);
-
-        if (byCategory is not null)
-            trns = trns.Where(t => t.CategoryId == byCategory);
-
-        if (byOwner is not null)
-            trns = trns.Where(t => t.OwnerId == byOwner);
-
-        return trns.ToList();
+        return trns;
     }
 }

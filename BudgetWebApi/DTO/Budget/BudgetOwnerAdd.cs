@@ -4,5 +4,5 @@ namespace BudgetWebApi.Dto;
 
 public class BudgetOwnerAdd
 {
-    [Required] public string UserId { get; set; }
+    [Required] public string? UserId { get; set; }
 }

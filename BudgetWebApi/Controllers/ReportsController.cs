@@ -37,6 +37,7 @@ public class ReportsController : ControllerBase
 
     private IReportBuilder CreateReport<T>(string budget, int? year, int? period) where T: IReportBuilder, new()
     {
+        _logger.LogInformation("Report {} requested for budget {}", typeof(T).Name, budget);
         string? requestingUser = User.Identity?.Name;
         IReportBuilder report = _reportFactory.CreateReport<T>(budget, requestingUser);
         if (year is not null && period is not null)

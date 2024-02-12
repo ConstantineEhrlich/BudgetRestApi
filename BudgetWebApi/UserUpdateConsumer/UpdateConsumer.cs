@@ -5,14 +5,12 @@ using BudgetWebApi.Dto;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace BudgetWebApi.UserUpdateConsumer;
 
 public class UpdateConsumer: BackgroundService
 {
     private readonly IServiceProvider _provider;
-    private readonly IOptions<UpdateConsumerSettings> _settings;
     private readonly string _name;
     private readonly IModel _channel;
     private readonly ILogger<UpdateConsumer> _logger;
@@ -21,7 +19,6 @@ public class UpdateConsumer: BackgroundService
     {
         _provider = provider;
         _logger = logger;
-        _settings = settings;
         ConnectionFactory factory = new();
         factory.UserName = settings.Value.UserName;
         factory.Password = settings.Value.Password;
@@ -40,7 +37,7 @@ public class UpdateConsumer: BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         EventingBasicConsumer consumer = new(_channel);
-        consumer.Received += async (model, ea) =>
+        consumer.Received += async (_, ea) =>
         {
             string message = Encoding.UTF8.GetString(ea.Body.ToArray());
             UserDto? userInfo = JsonSerializer.Deserialize<UserDto>(message);

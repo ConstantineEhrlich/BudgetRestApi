@@ -2,7 +2,7 @@ using BudgetModel.Interfaces;
 
 namespace BudgetModel.Extensions
 {
-    public static class IPeriodicExtensions
+    public static class PeriodicExtensions
     {
         public static IQueryable<T> UpToPeriod<T>(this IQueryable<T> input, int toYear, int toPeriod) where T: IPeriodic
         {

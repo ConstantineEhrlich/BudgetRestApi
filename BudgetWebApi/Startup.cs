@@ -1,13 +1,11 @@
 using System.Text;
-using System.Text.Json.Serialization;
-using BudgetModel.Models;
-using BudgetServices;
-using BudgetServices.Reports;
-using BudgetWebApi.Sockets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using BudgetModel.Models;
+using BudgetServices;
+using BudgetServices.Reports;
 
 using BudgetWebApi.Sockets;
 using BudgetWebApi.UserUpdateConsumer;
@@ -21,7 +19,7 @@ public class Startup
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
-        Configuration["JWT_KEY"] = System.Environment.GetEnvironmentVariable("JWT_KEY") ??
+        Configuration["JWT_KEY"] = Environment.GetEnvironmentVariable("JWT_KEY") ??
                                    throw new KeyNotFoundException("JWT_KEY variable not set");
     }
 
@@ -35,7 +33,7 @@ public class Startup
                 builder.AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials()
-                    .SetIsOriginAllowed(origin => true); // allow any origin
+                    .SetIsOriginAllowed(_ => true); // allow any origin
             });
         });
         
@@ -91,7 +89,7 @@ public class Startup
                     // This event is invoked when the middleware receives a message (in this case, an HTTP request)
                     OnMessageReceived = context =>
                     {
-                        if (context.Request.Cookies.TryGetValue("access_token", out string token))
+                        if (context.Request.Cookies.TryGetValue("access_token", out string? token))
                         {
                             // If the token is found in the cookie, use it for authentication
                             context.Token = token;

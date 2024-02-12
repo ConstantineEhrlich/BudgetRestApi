@@ -6,10 +6,10 @@ public class SummaryByPeriodAndCategory: ReportBuilder
         Transactions.GroupBy(t => new { t.Year, t.Period, t.Type, t.CategoryId })
                     .Select(group => new
                     {
-                        Year = group.Key.Year,
-                        Period = group.Key.Period,
-                        Type = group.Key.Type,
-                        CategoryId = group.Key.CategoryId,
+                        group.Key.Year,
+                        group.Key.Period,
+                        group.Key.Type,
+                        group.Key.CategoryId,
                         Count = group.Count(),
                         Amount = group.Sum(t => t.Amount)
                     });

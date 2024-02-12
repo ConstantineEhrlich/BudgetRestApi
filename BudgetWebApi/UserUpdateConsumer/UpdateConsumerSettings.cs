@@ -8,6 +8,6 @@ public class UpdateConsumerSettings
 
     public string QueueName { get; set; } = null!;
 
-    public string Password => System.Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ??
+    public string Password => Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ??
                               throw new KeyNotFoundException("RABBITMQ_PASSWORD variable not set");
 }

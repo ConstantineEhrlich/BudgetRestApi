@@ -2,8 +2,6 @@ using System.Net.WebSockets;
 using BudgetServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using System.Text;
 using BudgetModel.Enums;
 using BudgetWebApi.Dto;
 using BudgetWebApi.Sockets;
@@ -28,6 +26,7 @@ public class TransactionController : ControllerBase
     [Route("{budgetId}/updates")]
     public async Task Get(string budgetId)
     {
+        _logger.LogInformation("New socket connected");
         if (HttpContext.WebSockets.IsWebSocketRequest)
         {
             WebSocket socket = await HttpContext.WebSockets.AcceptWebSocketAsync();
@@ -47,13 +46,14 @@ public class TransactionController : ControllerBase
     [HttpPost]
     [Authorize]
     [Route("{budgetId}/transactions/add")]
-    public IActionResult Add([FromBody] Dto.TransactionAdd payload, string budgetId)
+    public IActionResult Add([FromBody] TransactionAdd payload, string budgetId)
     {
+        _logger.LogInformation("Adding transaction to budget {}", budgetId);
         string? requestingUser = User.Identity?.Name;
         TransactionDto trans = new(_transactionService.AddTransaction(budgetId,
                                                                        requestingUser!,
-                                                                       payload.CategoryId,
-                                                                       payload.Amount,
+                                                                       payload.CategoryId!,
+                                                                       payload.Amount!.Value,
                                                                        payload.Description,
                                                                        (TransactionType?)payload.TransactionType ?? TransactionType.Expense,
                                                                        payload.OwnerId ?? requestingUser,
@@ -70,25 +70,28 @@ public class TransactionController : ControllerBase
     [Route("{budgetId}/transactions")]
     public IActionResult GetAll(string budgetId)
     {
+        _logger.LogInformation("Adding transaction to budget {}", budgetId);
         string? requestingUser = User.Identity?.Name;
         return Ok(_transactionService
             .GetAllTransactions(budgetId, requestingUser)
             .OrderByDescending(t => t.Date)
-            .Select(t=>new Dto.TransactionDto(t)));
+            .Select(t=>new TransactionDto(t)));
     }
 
     [HttpGet]
     [Route("{budgetId}/transactions/{transId}")]
     public IActionResult GetOne(string budgetId, string transId)
     {
+        _logger.LogInformation("Getting transaction to budget {}", budgetId);
         string? requestingUser = User.Identity?.Name;
-        return Ok(new Dto.TransactionDto(_transactionService.GetTransaction(transId, requestingUser!)));
+        return Ok(new TransactionDto(_transactionService.GetTransaction(transId, requestingUser!)));
     }
 
     [HttpPut]
     [Route("{budgetId}/transactions/{transId}")]
-    public IActionResult Update([FromBody] Dto.TransactionUpdate payload, string budgetId, string transId)
+    public IActionResult Update([FromBody] TransactionUpdate payload, string budgetId, string transId)
     {
+        _logger.LogInformation("Update transaction in budget {}", budgetId);
         string? requestingUser = User.Identity?.Name;
         var t = _transactionService.GetTransaction(transId, requestingUser!);
         t.CategoryId = payload.CategoryId!;
@@ -99,7 +102,7 @@ public class TransactionController : ControllerBase
         t.Year = payload.Year ?? t.Year;
         t.Period = payload.Period ?? t.Period;
         
-        return Ok(new Dto.TransactionDto(_transactionService.UpdateTransaction(transId, requestingUser!, t)));
+        return Ok(new TransactionDto(_transactionService.UpdateTransaction(transId, requestingUser!, t)));
     }
 
     

@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace BudgetServices.Reports;
 
 public class ReportFactory: IReportFactory

@@ -1,7 +1,6 @@
 using BudgetServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using BudgetWebApi.Dto;
 
 namespace BudgetWebApi.Controllers;
@@ -23,8 +22,9 @@ public class BudgetFileController : ControllerBase
     [Route("")]
     public IActionResult GetAll()
     {
+        _logger.LogInformation("Requesting all budgets");
         string? requestingUser = User.Identity?.Name;
-        return Ok(_budgetFileService.GetAllBudgetFiles(requestingUser).Select(b => new Dto.BudgetDto(b)));
+        return Ok(_budgetFileService.GetAllBudgetFiles(requestingUser).Select(b => new BudgetDto(b)));
     }
 
     [HttpGet]
@@ -32,23 +32,26 @@ public class BudgetFileController : ControllerBase
     [Route("my")]
     public IActionResult GetMy()
     {
+        _logger.LogInformation("Requesting user budgets");
         string? requestingUser = User.Identity?.Name;
-        return Ok(_budgetFileService.GetOwnBudgetFiles(requestingUser!).Select(b => new Dto.BudgetDto(b)));
+        return Ok(_budgetFileService.GetOwnBudgetFiles(requestingUser!).Select(b => new BudgetDto(b)));
     }
 
     [HttpPost]
     [Authorize]
     [Route("new")]
-    public IActionResult Add([FromBody] Dto.BudgetFileAdd payload)
+    public IActionResult Add([FromBody] BudgetFileAdd payload)
     {
+        _logger.LogInformation("Creating new budget");
         string? requestingUser = User.Identity?.Name;
-        return Ok(new BudgetDto(_budgetFileService.AddBudgetFile(payload.Description, requestingUser!)));
+        return Ok(new BudgetDto(_budgetFileService.AddBudgetFile(payload.Description!, requestingUser!)));
     }
     
     [HttpGet]
     [Route("{budgetId}")]
     public IActionResult GetOne(string budgetId)
     {
+        _logger.LogInformation("Getting budget {}", budgetId);
         string? requestingUser = User.Identity?.Name;
         return Ok(new BudgetDto(_budgetFileService.GetBudgetFile(budgetId, requestingUser)));
     }
@@ -57,19 +60,21 @@ public class BudgetFileController : ControllerBase
     [HttpPost]
     [Authorize]
     [Route("{budgetId}/addOwner")]
-    public IActionResult AddOwner([FromBody] Dto.BudgetOwnerAdd payload, string budgetId)
+    public IActionResult AddOwner([FromBody] BudgetOwnerAdd payload, string budgetId)
     {
+        _logger.LogInformation("Adding owner {} to budget {}", payload.UserId, budgetId);
         string? requestingUser = User.Identity?.Name;
-        return Ok(new BudgetDto(_budgetFileService.AddOwner(budgetId, payload.UserId, requestingUser)));
+        return Ok(new BudgetDto(_budgetFileService.AddOwner(budgetId, payload.UserId!, requestingUser!)));
     }
     
     [HttpPost]
     [Authorize]
     [Route("{budgetId}/removeOwner")]
-    public IActionResult RemoveOwner([FromBody] Dto.BudgetOwnerAdd payload, string budgetId)
+    public IActionResult RemoveOwner([FromBody] BudgetOwnerAdd payload, string budgetId)
     {
+        _logger.LogInformation("Removing owner {} from budget {}", payload.UserId, budgetId);
         string? requestingUser = User.Identity?.Name;
-        return Ok(new BudgetDto(_budgetFileService.RemoveOwner(budgetId, payload.UserId, requestingUser!)));
+        return Ok(new BudgetDto(_budgetFileService.RemoveOwner(budgetId, payload.UserId!, requestingUser!)));
     }
 
     [HttpDelete]
@@ -77,21 +82,23 @@ public class BudgetFileController : ControllerBase
     [Route("{budgetId}")]
     public IActionResult Delete(string budgetId)
     {
+        _logger.LogInformation("Delete budget {}", budgetId);
         string? requestingUser = User.Identity?.Name;
-        _budgetFileService.DeleteBudgetFile(budgetId, requestingUser);
+        _budgetFileService.DeleteBudgetFile(budgetId, requestingUser!);
         return Ok();
     }
     
     [HttpPut]
     [Authorize]
     [Route("{budgetId}")]
-    public IActionResult Update([FromBody] Dto.BudgetFileUpdate payload, string budgetId)
+    public IActionResult Update([FromBody] BudgetFileUpdate payload, string budgetId)
     {
+        _logger.LogInformation("Update budget {}", budgetId);
         string? requestingUser = User.Identity?.Name;
         var b = _budgetFileService.GetBudgetFile(budgetId, requestingUser);
         b.Description = payload.Description ?? string.Empty;
         b.IsPrivate = payload.IsPrivate ?? b.IsPrivate;
-        _budgetFileService.UpdateBudgetFile(budgetId, requestingUser, b);
+        _budgetFileService.UpdateBudgetFile(budgetId, requestingUser!, b);
         return Ok();
     }
 

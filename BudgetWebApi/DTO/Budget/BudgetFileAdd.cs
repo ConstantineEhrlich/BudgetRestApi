@@ -4,5 +4,5 @@ namespace BudgetWebApi.Dto;
 
 public class BudgetFileAdd
 {
-    [Required] public string Description { get; set; }
+    [Required] public string? Description { get; set; }
 }

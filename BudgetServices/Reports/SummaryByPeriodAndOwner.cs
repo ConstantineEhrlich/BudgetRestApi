@@ -6,10 +6,10 @@ public class SummaryByPeriodAndOwner: ReportBuilder
         Transactions.GroupBy(t => new { t.Year, t.Period, t.Type, t.OwnerId })
                     .Select(group => new
                     {
-                        Year = group.Key.Year,
-                        Period = group.Key.Period,
-                        Type = group.Key.Type,
-                        OwnerId = group.Key.OwnerId,
+                        group.Key.Year,
+                        group.Key.Period,
+                        group.Key.Type,
+                        group.Key.OwnerId,
                         Amount = group.Sum(t => t.Amount)
                     });
 }

@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using BudgetModel.Models;
 using BudgetServices;
+using BudgetServices.Reports;
 using BudgetWebApi.Sockets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -43,18 +44,19 @@ public class Startup
         services.AddControllers(opts => opts.Filters.Add<Controllers.ExceptionFilter>());
         
         // Data access services
+        services.AddDbContext<BudgetModel.Context>(options =>
+            options.UseNpgsql(BudgetModel.Context.GetPostgresConnectionString()));
+
         services.AddScoped<UserService>();
         services.AddScoped<BudgetFileService>();
         services.AddScoped<CategoryService>();
         services.AddScoped<TransactionService>();
-        services.AddDbContext<BudgetModel.Context>(options =>
-            options.UseNpgsql(BudgetModel.Context.GetPostgresConnectionString()));
-            // options.UseSqlite(### Connection string)
+        
+        services.AddScoped<IReportFactory, ReportFactory>();
         
         // User creation notification consumer
         services.Configure<UpdateConsumerSettings>(Configuration.GetSection("UpdateConsumer"));
-        services.AddHostedService<UpdateConsumer>();
-        
+        services.AddHostedService<UpdateConsumer>();        
             
             
         // Read JWT key from the config

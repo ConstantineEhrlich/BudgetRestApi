@@ -59,9 +59,9 @@ public class Context : DbContext
     }
     public static string GetPostgresConnectionString()
     {
-        string server = System.Environment.GetEnvironmentVariable("POSTGRES_SERVER") ??
+        string server = Environment.GetEnvironmentVariable("POSTGRES_SERVER") ??
                         throw new KeyNotFoundException("POSTGRES_SERVER variable not set!");
-        string password = System.Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ??
+        string password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ??
                         throw new KeyNotFoundException("POSTGRES_PASSWORD variable not set!");
 
         NpgsqlConnectionStringBuilder builder = new()

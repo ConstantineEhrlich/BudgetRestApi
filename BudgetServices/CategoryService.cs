@@ -66,6 +66,6 @@ public class CategoryService
     public List<Category> GetAllCategories(string budgetFileId, string requestingUserId)
     {
         BudgetFile b = _budgetService.GetBudgetFile(budgetFileId, requestingUserId);
-        return b.Categories.Where(c => c.IsActive).ToList();
+        return b.Categories.ToList();
     }
 }

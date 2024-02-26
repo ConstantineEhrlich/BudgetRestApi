@@ -21,7 +21,7 @@ public class TransactionService
         _categoryService = categoryService;
     }
 
-    public Transaction AddTransaction(string budgetFileId,
+    public async Task<Transaction> AddTransaction(string budgetFileId,
                                string requestingUserId,
                                string categoryId,
                                decimal amount,
@@ -32,43 +32,44 @@ public class TransactionService
                                int? year = null,
                                int? period = null)
     {
-        _budgetService.ThrowIfNotOwner(requestingUserId, budgetFileId);
+        await _budgetService.ThrowIfNotOwner(requestingUserId, budgetFileId);
         
-        BudgetFile budgetFile = _budgetService.GetBudgetFile(budgetFileId, requestingUserId);
-        User author = _userService.GetUser(requestingUserId);
-        User owner = ownerId is null ? author : _userService.GetUser(ownerId);
-        Category cat = _categoryService.GetCategory(budgetFileId, categoryId, requestingUserId);
+        BudgetFile budgetFile = await _budgetService.GetBudgetFile(budgetFileId, requestingUserId);
+        
+        User author = await _userService.GetUserAsync(requestingUserId);
+        User owner = ownerId is null ? author : await _userService.GetUserAsync(ownerId);
+        Category cat = await _categoryService.GetCategory(budgetFileId, categoryId, requestingUserId);
         
         DateTime entryDate = date ?? DateTime.UtcNow;
         
         Transaction t = new(budgetFile, author, type, cat, description ?? string.Empty, amount)
         {
-            OwnerId = owner.Id,
+            OwnerId = owner.Id!,
             Date = entryDate,
             Year = year ?? entryDate.Year,
             Period = period ?? entryDate.Month
         };
-        _context.Add(t);
-        _context.SaveChanges();
+        await _context.AddAsync(t);
+        await _context.SaveChangesAsync();
         return t;
     }
 
-    public Transaction GetTransaction(string id, string requestingUserId)
+    public async Task<Transaction> GetTransaction(string id, string requestingUserId)
     {
-        Transaction? t = _context.Transactions!.Include(transaction => transaction.BudgetFile)
-            .FirstOrDefault(tr => tr.Id == id);
+        Transaction? t = await _context.Transactions!.Include(transaction => transaction.BudgetFile)
+            .FirstOrDefaultAsync(tr => tr.Id == id);
         if(t is null)                
             throw new BudgetServiceException($"Transaction {id} not found!");
     
         if (t.BudgetFile?.IsPrivate ?? false)
-            _budgetService.ThrowIfNotOwner(requestingUserId, t.BudgetFileId);
+            await _budgetService.ThrowIfNotOwner(requestingUserId, t.BudgetFileId);
         
         return t;
     }
     
-    public Transaction UpdateTransaction(string id, string requestingUserId, Transaction transaction)
+    public async Task<Transaction> UpdateTransaction(string id, string requestingUserId, Transaction transaction)
     {
-        Transaction target = GetTransaction(id, requestingUserId);
+        Transaction target = await GetTransaction(id, requestingUserId);
         
         target.Type = transaction.Type;
         target.Date = transaction.Date;
@@ -76,18 +77,17 @@ public class TransactionService
         target.Year = transaction.Year;
         target.Period = transaction.Period;
         target.Description = transaction.Description;
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return target;
     }
 
-    public IQueryable<Transaction> GetAllTransactions(string budgetId, string? requestingUserId)
+    public async Task<IQueryable<Transaction>> GetAllTransactions(string budgetId, string? requestingUserId)
     {
-        BudgetFile b = _budgetService.GetBudgetFile(budgetId, requestingUserId);
-        if(b.IsPrivate)
-            _budgetService.ThrowIfNotOwner(requestingUserId ?? string.Empty, budgetId);
+        _ = await _budgetService.GetBudgetFile(budgetId, requestingUserId);
 
         IQueryable<Transaction> trns = _context.Transactions!
-            .Where(t => t.BudgetFileId == budgetId);
+            .Where(t => t.BudgetFileId == budgetId)
+            .OrderByDescending(t => t.Date);
 
         return trns;
     }

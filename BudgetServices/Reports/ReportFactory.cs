@@ -13,7 +13,7 @@ public class ReportFactory: IReportFactory
     {
         return new T()
         {
-            Transactions = _transactions.GetAllTransactions(budgetId, requestingUserId)
+            Transactions = _transactions.GetAllTransactions(budgetId, requestingUserId).Result
         };
     }
 }

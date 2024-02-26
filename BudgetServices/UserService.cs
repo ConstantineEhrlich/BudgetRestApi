@@ -1,15 +1,19 @@
 ﻿using BudgetModel;
 using BudgetModel.Models;
+using BudgetServices.Cache;
+using Microsoft.EntityFrameworkCore;
 
 namespace BudgetServices;
 
 public class UserService
 {
     private readonly Context _context;
+    private readonly ICacheService<User> _cache;
 
-    public UserService(Context context)
+    public UserService(Context context, ICacheService<User> userCache)
     {
         _context = context;
+        _cache = userCache;
     }
 
     public async Task CreateUserAsync(string id, string name, string email)
@@ -28,28 +32,36 @@ public class UserService
         await _context.SaveChangesAsync();
     }
 
-    public User GetUser(string id)
+    public async Task<User> GetUserAsync(string id)
     {
         if (string.IsNullOrEmpty(id))
             throw new BudgetServiceException("Id can't be empty");
+
+        User? cachedUser = await _cache.GetFromCache(id);
+        if (cachedUser is not null)
+            return cachedUser;
         
-        User? u = _context.Users!.FirstOrDefault(usr => usr.Id == id);
-        if (u is null)
+        User? dbUser = await _context.Users!.FirstOrDefaultAsync(usr => usr.Id == id);
+        if (dbUser is null)
             throw new BudgetServiceException($"User {id} does not exist!");
 
-        return u;
+        await _cache.UpdateCache(dbUser, dbUser.Id!);
+        
+        return dbUser;
     }
 
-    public User UpdateUser(string id, User user)
+    public async Task<User> UpdateUser(string id, User user)
     {
-        User target = GetUser(id);
+        User target = await GetUserAsync(id);
+        _context.Attach(target);
         if (target.Id != user.Id)
             throw new BudgetServiceException($"Can't update user {id} with the profile of user {user.Id}");
         
         target.Name = user.Name;
         target.Email = user.Email;
-        
-        _context.SaveChanges();
+
+        await _cache.DeleteCache(id);
+        await _context.SaveChangesAsync();
         return target;
     }
 

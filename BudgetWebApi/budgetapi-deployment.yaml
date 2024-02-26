@@ -34,4 +34,9 @@ spec:
                secretKeyRef:
                  name: rabbitmq
                  key: rabbitmq-password
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis
+                  key: redis-password
     

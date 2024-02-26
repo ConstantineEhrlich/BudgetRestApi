@@ -16,10 +16,10 @@ public class BudgetFile
     [JsonIgnore]
     public virtual ICollection<Transaction>? Transactions { get; set; }
     
-    [JsonIgnore]
+    //[JsonIgnore]
     public virtual ICollection<User> Owners { get; set; } = new List<User>();
 
-    [JsonIgnore]
+    //[JsonIgnore]
     public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
     
     protected BudgetFile(){}

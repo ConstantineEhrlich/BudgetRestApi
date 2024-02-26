@@ -15,19 +15,19 @@ public class RedisCacheService<T>: ICacheService<T> where T: class
         Type t = typeof(T);
         _prefix = new(t.Name);
         _prefix.Append(':');
-        while (t.IsGenericType)
-        {
-            t = t.GenericTypeArguments[0];
-            _prefix.Append(t.Name);
-        }
     }
 
     public async Task<T?> GetFromCache(string id)
     {
-        string? cachedVal = await _cache.StringGetAsync(_prefix.Append(id).ToString());
+        string? cachedVal = await GetStringFromCache(id);
         return cachedVal is not null
             ? System.Text.Json.JsonSerializer.Deserialize<T>(cachedVal)
             : null;
+    }
+
+    public async Task<string?> GetStringFromCache(string id)
+    {
+        return await _cache.StringGetAsync(_prefix.Append(id).ToString());
     }
 
     public async Task UpdateCache(T obj, string id)

@@ -7,11 +7,18 @@ namespace BudgetServices.Cache;
 public interface ICacheService<T> where T : class
 {
     /// <summary>
-    /// Returns an instance of T 
+    /// Returns an instance of T by deserializing it from the cache.
     /// </summary>
     /// <param name="id">Id of the object</param>
     /// <returns>T, or Null when cached value not found</returns>
     Task<T?> GetFromCache(string id);
+
+    /// <summary>
+    /// Gets 
+    /// </summary>
+    /// <param name="id">Id of the object</param>
+    /// <returns>String</returns>
+    Task<string?> GetStringFromCache(string id);
     
     /// <summary>
     /// Stores an object in the cache

@@ -4,9 +4,9 @@ namespace BudgetModel.Models;
 
 public class User
 {
-    public string Id { get; set; }
-    public string Name { get; set; }
-    public string Email { get; set; } = string.Empty;
+    public string? Id { get; set; }
+    public string? Name { get; set; }
+    public string? Email { get; set; }
 
     [JsonIgnore]
     public virtual ICollection<Transaction>? AuthoredTransactions { get; set; }

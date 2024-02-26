@@ -9,7 +9,9 @@ public class Transaction: IPeriodic
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
 
     public string BudgetFileId { get; set; } = string.Empty;
+    [JsonPropertyName("transactionType")]
     public TransactionType Type { get; set; }
+    [JsonPropertyName("transactionDate")]
     public DateTime Date { get; set; }
     public DateTime RecordedAt { get; set; }
     public string OwnerId { get; set; } = null!;
@@ -51,8 +53,8 @@ public class Transaction: IPeriodic
         Type = type;
         Date = date;
         RecordedAt = DateTime.UtcNow;
-        OwnerId = owner.Id;
-        AuthorId = author.Id;
+        OwnerId = owner.Id!;
+        AuthorId = author.Id!;
         Year = Date.Year;
         Period = Date.Month;
         CategoryId = cat.Id;

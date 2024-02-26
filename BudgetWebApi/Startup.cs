@@ -5,10 +5,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using BudgetModel.Models;
 using BudgetServices;
+using BudgetServices.Cache;
 using BudgetServices.Reports;
 
 using BudgetWebApi.Sockets;
 using BudgetWebApi.UserUpdateConsumer;
+using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 
 namespace BudgetWebApi;
 
@@ -44,9 +47,15 @@ public class Startup
         // Data access services
         services.AddDbContext<BudgetModel.Context>(options =>
             options.UseNpgsql(BudgetModel.Context.GetPostgresConnectionString()));
+        
+        // Redis caching service
+        ConfigurationOptions redisOpts = ConfigurationOptions.Parse(Configuration.GetSection("RedisSettings")["Hostname"]);
+        redisOpts.Password = Environment.GetEnvironmentVariable("REDIS_PASSWORD");
+        services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisOpts.ToString()));
 
         services.AddScoped<UserService>();
         services.AddScoped<BudgetFileService>();
+        services.AddScoped<ICacheService<BudgetFile>, RedisCacheService<BudgetFile>>();
         services.AddScoped<CategoryService>();
         services.AddScoped<TransactionService>();
         

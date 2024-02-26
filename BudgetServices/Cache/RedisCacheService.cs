@@ -6,15 +6,14 @@ namespace BudgetServices.Cache;
 public class RedisCacheService<T>: ICacheService<T> where T: class
 {
     private readonly IDatabase _cache;
-    private readonly StringBuilder _prefix;
+    private readonly string _prefix;
 
     public RedisCacheService(IConnectionMultiplexer connection)
     {
         _cache = connection.GetDatabase();
         
         Type t = typeof(T);
-        _prefix = new(t.Name);
-        _prefix.Append(':');
+        _prefix = $"{t.Name}:";
     }
 
     public async Task<T?> GetFromCache(string id)
@@ -27,12 +26,17 @@ public class RedisCacheService<T>: ICacheService<T> where T: class
 
     public async Task<string?> GetStringFromCache(string id)
     {
-        return await _cache.StringGetAsync(_prefix.Append(id).ToString());
+        return await _cache.StringGetAsync($"{_prefix}{id}");
     }
 
     public async Task UpdateCache(T obj, string id)
     {
         string json = System.Text.Json.JsonSerializer.Serialize(obj);
-        await _cache.StringSetAsync(_prefix.Append(id).ToString(), json);
+        await _cache.StringSetAsync($"{_prefix}{id}", json);
+    }
+
+    public async Task DeleteCache(string id)
+    {
+        await _cache.KeyDeleteAsync($"{_prefix}{id}");
     }
 }

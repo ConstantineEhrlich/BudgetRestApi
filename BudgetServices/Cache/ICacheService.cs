@@ -26,4 +26,11 @@ public interface ICacheService<T> where T : class
     /// <param name="obj">Object to store</param>
     /// <param name="id">Id of the object</param>
     Task UpdateCache(T obj, string id);
+
+    /// <summary>
+    /// Deletes the object from the cache
+    /// </summary>
+    /// <param name="id">Id of the object</param>
+    /// <returns></returns>
+    Task DeleteCache(string id);
 }

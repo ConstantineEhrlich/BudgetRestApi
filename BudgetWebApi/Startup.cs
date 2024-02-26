@@ -54,6 +54,7 @@ public class Startup
         services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisOpts.ToString()));
 
         services.AddScoped<UserService>();
+        services.AddScoped<ICacheService<User>, RedisCacheService<User>>();
         services.AddScoped<BudgetFileService>();
         services.AddScoped<ICacheService<BudgetFile>, RedisCacheService<BudgetFile>>();
         services.AddScoped<CategoryService>();

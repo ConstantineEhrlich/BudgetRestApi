@@ -123,15 +123,9 @@ public class BudgetFileService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<BudgetFile>> GetAllBudgetFiles(string? requestingUserId = null)
+    public async Task<List<BudgetFile>> GetPublicBudgetFiles(string? requestingUserId = null)
     {
-        List<BudgetFile> budgetFiles = new();
-        budgetFiles.AddRange(await _context.Budgets!.Where(b => !b.IsPrivate).ToListAsync());
-
-        if (requestingUserId is not null)
-            budgetFiles.AddRange(await GetOwnBudgetFiles(requestingUserId));
-        
-        return budgetFiles;
+        return await _context.Budgets!.Where(b => !b.IsPrivate).ToListAsync();
     }
 
     public async Task<List<BudgetFile>> GetOwnBudgetFiles(string requestingUserId)

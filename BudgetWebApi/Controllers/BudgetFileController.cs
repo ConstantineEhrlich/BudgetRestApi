@@ -21,11 +21,11 @@ public class BudgetFileController : ControllerBase
     
     [HttpGet]
     [Route("")]
-    public async Task<ActionResult<List<BudgetFile>>> GetAll()
+    public async Task<ActionResult<List<BudgetFile>>> GetPublic()
     {
         _logger.LogInformation("Requesting all budgets");
         string? requestingUser = User.Identity?.Name;
-        return await _budgetFileService.GetAllBudgetFiles(requestingUser);
+        return await _budgetFileService.GetPublicBudgetFiles(requestingUser);
     }
 
     [HttpGet]

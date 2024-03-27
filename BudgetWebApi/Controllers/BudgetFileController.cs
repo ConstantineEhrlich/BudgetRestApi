@@ -24,8 +24,7 @@ public class BudgetFileController : ControllerBase
     public async Task<ActionResult<List<BudgetFile>>> GetPublic()
     {
         _logger.LogInformation("Requesting all budgets");
-        string? requestingUser = User.Identity?.Name;
-        return await _budgetFileService.GetPublicBudgetFiles(requestingUser);
+        return await _budgetFileService.GetPublicBudgetFiles();
     }
 
     [HttpGet]

@@ -11,7 +11,8 @@
         "JWT_KEY": "ThisKeyHaveToBeExtremelySecureToWork",
         "POSTGRES_SERVER": "localhost",
         "POSTGRES_PASSWORD": "PostgresPassword",
-        "RABBITMQ_PASSWORD": "cJKdsolFHKBNwbev"
+        "RABBITMQ_PASSWORD": "cJKdsolFHKBNwbev",
+        "REDIS_PASSWORD": "DIjxm2kHld"
       }
     }
   }

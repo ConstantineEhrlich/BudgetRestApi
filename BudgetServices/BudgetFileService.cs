@@ -63,10 +63,12 @@ public class BudgetFileService
 
     public async Task<BudgetFile> GetBudgetFile(string id, string? requestingUserId)
     {
+        _logger.LogInformation("Fetching budget file from the cache. Id = {id}", id);
         BudgetFile? b = await _cache.GetFromCache(id);
         // If the object does not present in the cache
         if (b is null)
         {
+            _logger.LogInformation("Budget file not found in cache, fetching from the database. Id = {budgetId}", id);
             // Query the budget from the database
             b = await _context.Budgets!
                 .Include(bf => bf.Owners)

@@ -21,7 +21,7 @@ build-migration:
 	docker build --platform $(PLATFORM) -f ./migration.dockerfile -t $(REGISTRY)/budget-migration:$(VERSION) .
 
 push-migration:
-	docker push $(REGISTRY)/$(IMAGE_NAME):$(VERSION)
+	docker push $(REGISTRY)/budget-migration:$(VERSION)
 
 build:
 	docker build --platform $(PLATFORM) -f ./$(DOCKER_FILE) -t $(REGISTRY)/$(IMAGE_NAME):$(VERSION) .

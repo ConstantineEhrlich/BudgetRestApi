@@ -8,6 +8,9 @@
 
     <ItemGroup>
       <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
+      <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="7.0.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="7.0.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="7.0.0" />
       <ProjectReference Include="..\BudgetModel\BudgetModel.csproj" />
       <ProjectReference Include="..\BudgetServices\BudgetServices.csproj" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.21" />

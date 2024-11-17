@@ -27,6 +27,7 @@ public class UpdateConsumer: BackgroundService
         factory.Port = settings.Value.Port ?? 5555;
         IConnection connection = factory.CreateConnection();
         _channel = connection.CreateModel();
+        _logger.LogInformation("Connection established");
         _name = settings.Value.QueueName;
         _channel.QueueDeclare(queue: _name,
             durable: true,

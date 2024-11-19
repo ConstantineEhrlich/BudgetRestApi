@@ -98,8 +98,8 @@ public class BudgetFileService
 
     public async Task<BudgetFile> UpdateBudgetFile(string id, string requestingUserId, BudgetFile b)
     {
+        _logger.LogInformation("Updating budget file Id = {id}", id);
         BudgetFile target = await GetBudgetFile(id, requestingUserId);
-        _context.Attach(target);
         if (!await IsOwner(requestingUserId, id))
             throw new BudgetServiceException($"User {requestingUserId} is not allowed to change budget {id}");
 

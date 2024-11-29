@@ -30,7 +30,7 @@ public class ReportsController : ControllerBase
     public IActionResult SummaryByOwner(string budgetId,
                                         [FromQuery, Range(1900, 2999)] int? year,
                                         [FromQuery, Range(1, 12)] int? period)
-        => Ok(CreateReport<SummaryByPeriodAndOwner>(budgetId, year, period, ForOnePeriod).Summarize());
+        => Ok(CreateReport<BalanceToPeriodReport>(budgetId, year, period, ForOnePeriod).Summarize());
 
     [HttpGet]
     [Route("{budgetId}/[action]")]

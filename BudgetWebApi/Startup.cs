@@ -120,6 +120,8 @@ public class Startup
         services.AddSingleton<BudgetUpdateManager>();
         // Socket cleanup service - runs in background
         services.AddHostedService<CleanupService<BudgetUpdateManager>>();
+        
+        services.AddSwaggerGen();
 
     }
 
@@ -129,6 +131,12 @@ public class Startup
         {
             app.UseDeveloperExceptionPage();
             app.UseCors("DynamicCorsPolicy");
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuthService API V1");
+                c.RoutePrefix = string.Empty; // To serve Swagger UI at the app's root
+            });
         }
         else
         {

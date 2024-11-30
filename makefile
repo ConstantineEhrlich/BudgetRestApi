@@ -1,28 +1,43 @@
 BUDGETDB-PASSWORD = PostgresPassword
 AUTHDB-PASSWORD = MongoDbPassword
 JWT-TOKEN = ThisKeyHaveToBeExtremelySecureToWork
-REGISTRY = registry.digitalocean.com/budgetapp-registry/
+VERSION ?= latest
+PLATFORM ?= linux/amd64
+REGISTRY = docker-registry.home.arpa/mybudget
+IMAGE_NAME = budgetapi
+DOCKER_FILE ?= budgetapi.dockerfile
+CONTAINER_PORT ?= 80
+HOST_PORT ?= 5005
 
+config:
+	@echo "Registry:     $(REGISTRY)"
+	@echo "Image:        $(IMAGE_NAME)"
+	@echo "Version:      $(VERSION)"
+	@echo "Platform:     $(PLATFORM)"
+	@echo "Docker file:  $(DOCKER_FILE)"
+	@echo "Ports:        Host $(HOST_PORT) -> Container $(CONTAINER_PORT)"
 
-kube-secrets:
-	kubectl delete secrets --all --namespace default
-	kubectl create secret generic budgetdb --from-literal=password=$(BUDGETDB-PASSWORD)
-	kubectl create secret generic authdb --from-literal=password=$(AUTHDB-PASSWORD)	
-	kubectl create secret generic jwt --from-literal=token=$(JWT-TOKEN)
-	
+build-migration:
+	docker build --platform $(PLATFORM) -f ./migration.dockerfile -t $(REGISTRY)/budget-migration:$(VERSION) .
 
+push-migration:
+	docker push $(REGISTRY)/budget-migration:$(VERSION)
 
-minikube-images:
-	@eval $$(minikube docker-env) && \
-    docker build -f ./migration.dockerfile -t $(REGISTRY)budget-migration .
-	@eval $$(minikube docker-env) && \
-   	docker build -f ./budgetapi.dockerfile -t $(REGISTRY)budgetapi .
+build:
+	docker build --platform $(PLATFORM) -f ./$(DOCKER_FILE) -t $(REGISTRY)/$(IMAGE_NAME):$(VERSION) .
 
+run:
+	docker run -p $(HOST_PORT):$(CONTAINER_PORT) $(REGISTRY)/$(IMAGE_NAME):$(VERSION)
+
+stop:
+	docker ps -q --filter ancestor=$(REGISTRY)/$(IMAGE_NAME):$(VERSION) | xargs -r docker stop
+
+push:
+	docker push $(REGISTRY)/$(IMAGE_NAME):$(VERSION)
 
 remote-images:
 	docker build --platform linux/amd64 -f ./migration.dockerfile -t $(REGISTRY)budget-migration --push .
 	docker build --platform linux/amd64 -f ./budgetapi.dockerfile -t $(REGISTRY)budgetapi --push .
-
 
 deploy:
 	# Deploy budgetapi database

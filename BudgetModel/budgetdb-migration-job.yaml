@@ -12,6 +12,10 @@ spec:
           env:
             - name: POSTGRES_SERVER
               value: budgetdb
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_USER
+              value: budget
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:

@@ -1,0 +1,42 @@
+kind: pipeline
+type: exec
+name: default
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+  - name: build migration image
+    commands:
+      - make build-migration
+    when:
+      branch: main
+      event:
+        - pull_request
+        - push
+
+
+  - name: build application
+    commands:
+      - make build
+    when:
+      branch: main
+      event:
+        - pull_request
+        - push
+
+  - name: push migration image
+    commands:
+      - make push-migration
+    when:
+      branch: main
+      event:
+        - push
+
+  - name: push application
+    commands:
+      - make push
+    when:
+      branch: main
+      event:
+        - push

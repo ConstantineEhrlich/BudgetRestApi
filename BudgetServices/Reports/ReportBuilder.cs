@@ -6,6 +6,7 @@ namespace BudgetServices.Reports;
 public abstract class ReportBuilder: IReportBuilder
 {
     public IQueryable<Transaction> Transactions { get; set; } = null!;
+    public BudgetFile Budget { get; set; } = null!;
 
     public IReportBuilder ForPeriod(int year, int period)
     {

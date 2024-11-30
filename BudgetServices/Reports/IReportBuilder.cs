@@ -5,6 +5,7 @@ namespace BudgetServices.Reports;
 public interface IReportBuilder
 {
     IQueryable<Transaction> Transactions { get; set; }
+    BudgetFile Budget { get; set; }
     IQueryable<object> Summarize();
     
     IReportBuilder ForPeriod(int year, int period);

@@ -25,6 +25,7 @@ public class TransactionController : ControllerBase
         _updateManager = updateManager;
     }
 
+    [HttpGet]
     [Route("{budgetId}/updates")]
     public async Task Get(string budgetId)
     {

@@ -61,15 +61,19 @@ public class Context : DbContext
     {
         string server = Environment.GetEnvironmentVariable("POSTGRES_SERVER") ??
                         throw new KeyNotFoundException("POSTGRES_SERVER variable not set!");
+        int port = int.Parse(Environment.GetEnvironmentVariable("POSTGRES_PORT") ??
+                             throw new KeyNotFoundException("POSTGRES_PORT variable not set!"));
+        string user = Environment.GetEnvironmentVariable("POSTGRES_USER") ??
+                        throw new KeyNotFoundException("POSTGRES_USER variable not set!");
         string password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ??
-                        throw new KeyNotFoundException("POSTGRES_PASSWORD variable not set!");
+                          throw new KeyNotFoundException("POSTGRES_PASSWORD variable not set!");
 
         NpgsqlConnectionStringBuilder builder = new()
         {
             Host = server,
-            Port = 5432,
+            Port = port,
             Database = "budget",
-            Username = "user",
+            Username = user,
             Password = password,
         };
 

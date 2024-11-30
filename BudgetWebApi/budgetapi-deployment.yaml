@@ -27,7 +27,7 @@ spec:
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_USER
-              value: budget
+              value: user
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:

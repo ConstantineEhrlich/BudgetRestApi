@@ -20,7 +20,6 @@ public class TransactionService
         _budgetService = budgetService;
         _categoryService = categoryService;
     }
-
     public async Task<Transaction> AddTransaction(string budgetFileId,
                                string requestingUserId,
                                string categoryId,
@@ -30,7 +29,8 @@ public class TransactionService
                                string? ownerId = null,
                                DateTime? date = null,
                                int? year = null,
-                               int? period = null)
+                               int? period = null,
+                               string? id = null)
     {
         await _budgetService.ThrowIfNotOwner(requestingUserId, budgetFileId);
         
@@ -42,7 +42,7 @@ public class TransactionService
         
         DateTime entryDate = date ?? DateTime.UtcNow;
         
-        Transaction t = new(budgetFile, author, type, cat, description ?? string.Empty, amount)
+        Transaction t = new(budgetFile, author, type, cat, description ?? string.Empty, amount, id)
         {
             OwnerId = owner.Id!,
             Date = entryDate,

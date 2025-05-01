@@ -77,6 +77,7 @@ public class TransactionService
         target.Year = transaction.Year;
         target.Period = transaction.Period;
         target.Description = transaction.Description;
+        target.Amount = transaction.Amount;
         await _context.SaveChangesAsync();
         return target;
     }

@@ -7,11 +7,11 @@ spec:
     spec:
       containers:
         - name: budgetdb-migration-job
-          image: registry.digitalocean.com/budgetapp-registry/budget-migration:latest
+          image: docker-registry.home.arpa/mybudget/budget-migration:latest
           imagePullPolicy: Always
           env:
             - name: POSTGRES_SERVER
-              value: budgetdb
+              value: postgres.db
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_USER

@@ -1,6 +1,3 @@
-BUDGETDB-PASSWORD = PostgresPassword
-AUTHDB-PASSWORD = MongoDbPassword
-JWT-TOKEN = ThisKeyHaveToBeExtremelySecureToWork
 VERSION ?= latest
 PLATFORM ?= linux/amd64
 REGISTRY = docker-registry.home.arpa/mybudget
@@ -17,12 +14,6 @@ config:
 	@echo "Docker file:  $(DOCKER_FILE)"
 	@echo "Ports:        Host $(HOST_PORT) -> Container $(CONTAINER_PORT)"
 
-build-migration:
-	docker build --platform $(PLATFORM) -f ./migration.dockerfile -t $(REGISTRY)/budget-migration:$(VERSION) .
-
-push-migration:
-	docker push $(REGISTRY)/budget-migration:$(VERSION)
-
 build:
 	docker build --platform $(PLATFORM) -f ./$(DOCKER_FILE) -t $(REGISTRY)/$(IMAGE_NAME):$(VERSION) .
 
@@ -35,36 +26,21 @@ stop:
 push:
 	docker push $(REGISTRY)/$(IMAGE_NAME):$(VERSION)
 
-remote-images:
-	docker build --platform linux/amd64 -f ./migration.dockerfile -t $(REGISTRY)budget-migration --push .
-	docker build --platform linux/amd64 -f ./budgetapi.dockerfile -t $(REGISTRY)budgetapi --push .
+pull:
+	docker pull $(REGISTRY)/$(IMAGE_NAME):$(VERSION)
 
-deploy:
-	# Deploy budgetapi database
-	kubectl apply -f ./BudgetModel/postgres-claim.yaml
-	kubectl apply -f ./BudgetModel/budgetdb-deployment.yaml
-	kubectl apply -f ./BudgetModel/budgetdb-service.yaml
-	# Run migration job
-	kubectl apply -f ./BudgetModel/budgetdb-migration-job.yaml
-	# Deploy the app
-	kubectl apply -f ./BudgetWebApi/budgetapi-deployment.yaml
-	kubectl apply -f ./BudgetWebApi/budgetapi-service.yaml
-	
-
-restart:
-	kubectl rollout restart deployment budgetapi
+clean:
+	docker rmi $(REGISTRY)/$(IMAGE_NAME):$(VERSION)
 
 
-listen-postgres:
-	kubectl port-forward svc/postgres 5432:5432
+
+build-migration:
+	docker build --platform $(PLATFORM) -f ./migration.dockerfile -t $(REGISTRY)/budget-migration:$(VERSION) .
+
+push-migration:
+	docker push $(REGISTRY)/budget-migration:$(VERSION)
 
 
-listen-api:
-	kubectl port-forward svc/budgetapi 8765:80
 
-	
-delete-cluster:
-	kubectl delete deployments --all --namespace default
-	kubectl delete services --all --namespace default
-	kubectl delete jobs --all --namespace default
-	
+build-imex:
+	$(MAKE) build DOCKER_FILE="budgetimex.dockerfile" IMAGE_NAME="budgetimex"

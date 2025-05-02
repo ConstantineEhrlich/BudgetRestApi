@@ -88,7 +88,7 @@ public class TransactionService
 
         IQueryable<Transaction> trns = _context.Transactions!
             .Where(t => t.BudgetFileId == budgetId)
-            .OrderByDescending(t => t.Date);
+            .OrderByDescending(t => t.RecordedAt);
 
         return trns;
     }

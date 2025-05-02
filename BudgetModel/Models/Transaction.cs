@@ -6,7 +6,7 @@ namespace BudgetModel.Models;
 
 public class Transaction: IPeriodic
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString("N");
+    public string Id { get; set; }
 
     public string BudgetFileId { get; set; } = string.Empty;
     [JsonPropertyName("transactionType")]
@@ -47,16 +47,20 @@ public class Transaction: IPeriodic
                        TransactionType type,
                        Category cat,
                        string description,
-                       decimal amount)
+                       decimal amount,
+                       string? id = null,
+                       int? year = null,
+                       int? period = null)
     {
+        Id = id ?? $"{owner.Id}_{cat.Id}_{date:yy-MM-dd}_{Guid.NewGuid():D}";
         BudgetFileId = budget.Id;
         Type = type;
         Date = date;
         RecordedAt = DateTime.UtcNow;
         OwnerId = owner.Id!;
         AuthorId = author.Id!;
-        Year = Date.Year;
-        Period = Date.Month;
+        Year = year ?? Date.Year;
+        Period = period ?? Date.Month;
         CategoryId = cat.Id;
         Description = description;
         Amount = amount;
@@ -67,6 +71,7 @@ public class Transaction: IPeriodic
                        TransactionType type,
                        Category cat,
                        string description,
-                       decimal amount) 
-          : this(budget, author, author, DateTime.Now, type, cat, description, amount) { }
+                       decimal amount,
+                       string? id = null) 
+          : this(budget, author, author, DateTime.Now, type, cat, description, amount, id) { }
 }

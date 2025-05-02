@@ -14,29 +14,47 @@ spec:
     spec:
       containers:
         - name: budgetapi
-          image: registry.digitalocean.com/budgetapp-registry/budgetapi:latest
+          image: docker-registry.home.arpa/mybudget/budgetapi:latest
           imagePullPolicy: Always
           env:
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
-                  name: jwt
                   key: token
+                  name: jwt
             - name: POSTGRES_SERVER
-              value: budgetdb
+              value: postgresql.db
+            - name: POSTGRES_PORT
+              value: '5432'
+            - name: POSTGRES_USER
+              value: budget
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_USER
+              value: budget
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: budgetdb
                   key: password
+                  name: budgetdb
             - name: RABBITMQ_PASSWORD
               valueFrom:
-               secretKeyRef:
-                 name: rabbitmq
-                 key: rabbitmq-password
+                secretKeyRef:
+                  key: rabbitmq-password
+                  name: rabbitmq
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: redis
                   key: redis-password
+                  name: redis
+            - name: UpdateConsumer__UserName
+              value: authservice
+            - name: UpdateConsumer__HostName
+              value: rabbitmq.db
+            - name: UpdateConsumer__VirtualHost
+              value: mybudget-staging
+            - name: UpdateConsumer_Port
+              value: '5672'
+            - name: RedisSettings__Hostname
+              value: redis-master.db:6379
     

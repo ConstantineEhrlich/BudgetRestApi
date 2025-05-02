@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using BudgetModel.Models;
 using BudgetServices;
 using BudgetServices.Cache;
+using BudgetServices.Excel;
 using BudgetServices.Reports;
 
 using BudgetWebApi.Sockets;
@@ -59,6 +60,7 @@ public class Startup
         services.AddScoped<ICacheService<BudgetFile>, RedisCacheService<BudgetFile>>();
         services.AddScoped<CategoryService>();
         services.AddScoped<TransactionService>();
+        services.AddScoped<DataImportService>();
         
         services.AddScoped<IReportFactory, ReportFactory>();
         

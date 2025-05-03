@@ -19,11 +19,13 @@ public class DataExportService
     public async Task<ExportResult> ExportTransactions(string budgetId, string? requestingUserId)
     {
         var fileName = $"report_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}_{Guid.NewGuid().ToString("N")[..6]}.xlsx";
+        _logger.LogInformation("Exporting transactions to {fileName}", fileName);
         var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
                        ?? throw new BudgetServiceException("Base path not found");
         var exportPath = Path.Combine(basePath, "data", "export", budgetId);
         if (!Directory.Exists(exportPath))
         {
+            _logger.LogInformation("Creating export directory {exportPath}", exportPath);
             Directory.CreateDirectory(exportPath);
         }
 
@@ -56,7 +58,7 @@ public class DataExportService
             row["Period"] = t.Period;
             table.Rows.Add(row);
         }
-
+        _logger.LogInformation("Writing data to {filePath}", filePath);
         var writer = new ExcelWriter(filePath);
         writer.WriteData("Transactions", table.CreateDataReader());
         writer.Dispose();

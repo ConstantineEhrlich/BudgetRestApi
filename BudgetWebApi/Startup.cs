@@ -62,6 +62,8 @@ public class Startup
         services.AddScoped<TransactionService>();
         services.AddScoped<DataImportService>();
         services.AddScoped<DataExportService>();
+        services.Configure<ExportSettings>(Configuration.GetSection("ExportSettings"));
+        services.AddHostedService<DailyExportService>();
         
         services.AddScoped<IReportFactory, ReportFactory>();
         

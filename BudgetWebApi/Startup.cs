@@ -61,6 +61,7 @@ public class Startup
         services.AddScoped<CategoryService>();
         services.AddScoped<TransactionService>();
         services.AddScoped<DataImportService>();
+        services.AddScoped<DataExportService>();
         
         services.AddScoped<IReportFactory, ReportFactory>();
         

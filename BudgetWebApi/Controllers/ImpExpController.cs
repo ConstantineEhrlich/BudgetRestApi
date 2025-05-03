@@ -6,15 +6,17 @@ namespace BudgetWebApi.Controllers;
 
 [ApiController]
 [Route("budgets")]
-public class ImportController : ControllerBase
+public class ImpExpController : ControllerBase
 {
-    private readonly ILogger<ImportController> _logger;
+    private readonly ILogger<ImpExpController> _logger;
     private readonly DataImportService _importService;
+    private readonly DataExportService _exportService;
 
-    public ImportController(ILogger<ImportController> logger, DataImportService importService)
+    public ImpExpController(ILogger<ImpExpController> logger, DataImportService importService, DataExportService exportService)
     {
         _logger = logger;
         _importService = importService;
+        _exportService = exportService;
     }
 
     [HttpPost]
@@ -43,4 +45,19 @@ public class ImportController : ControllerBase
         var result = await _importService.ImportData(config, requestingUser, cancellationToken);
         return Ok(result);
     }
+    
+    [HttpGet]
+    [Authorize]
+    [Route("{budgetId}/export")]
+    public async Task<ActionResult<ExportResult>> Export(string budgetId, CancellationToken cancellationToken)
+    {
+        string? requestingUser = User.Identity?.Name;
+        
+        if (requestingUser is null)
+            return Unauthorized("User identity is not found");
+
+        return await _exportService.ExportTransactions(budgetId, requestingUser);
+    }
+    
+    
 }
